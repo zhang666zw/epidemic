@@ -34,8 +34,8 @@
       </el-table-column>
       <el-table-column label="操作" width="350px">
         <template v-slot="scope">
-          <el-button size="medium" type="primary" icon="el-icon-search" @click="findContacts(scope.row.patientId,scope.row.batch)">查看接触者</el-button>
-          <el-button size="medium" type="primary" icon="el-icon-search" @click="findPotentialPatients(scope.row.patientId,scope.row.batch)">查看潜在患者</el-button>
+          <el-button size="medium" type="warning" icon="el-icon-search" @click="findContacts(scope.row.patientId,scope.row.batch)">查看接触者</el-button>
+          <el-button size="medium" type="danger" icon="el-icon-search" @click="findPotentialPatients(scope.row.patientId,scope.row.batch)">查看潜在患者</el-button>
         </template>
       </el-table-column>
     </el-table>

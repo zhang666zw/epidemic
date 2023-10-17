@@ -26,14 +26,13 @@ const ChainFind = ()=>import('../views/association/Chain.vue')
 const ChainContact = ()=>import('../views/association/PotentialPatients.vue')
 const AreaChain = ()=>import('../views/association/AreaChain.vue')
 const TrendPrediction = ()=>import('../views/reasoning/TrendPrediction.vue')
-const MessageInput = ()=>import('../views/messageInput/MessageInput.vue')
 
 
 export default new Router({
   mode:'history',
   routes: [
     {
-      path: '/', redirect: '/messageInput', component: Layout,
+      path: '/', redirect: '/reasoning/patients', component: Layout,
       children:[
         { path:'reasoning', redirect: '/reasoning/patients', component: Reasoning, meta:{ title:"推理模块"},
           children:[
@@ -51,7 +50,6 @@ export default new Router({
             { path:'keyPerson', name:'keyPerson', component:KeyPerson, meta:{ title:"重点对象模块"},},
             { path:'areaChain',  name:'AreaChain',component:AreaChain, meta:{ activeMenu:'/association/patients',title:"区域传播链模块"}}
           ]},
-        { path:'/messageInput', component: MessageInput, meta:{ title:"信息输入模块"},}
       ]
     },
   ]

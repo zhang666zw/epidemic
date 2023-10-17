@@ -3,16 +3,25 @@
     <el-card><h2>区域感染信息</h2></el-card>
     <div class="card-container">
       <el-card class="card">
-        <div slot="header" >
-          <el-button type="primary" @click="initLeftEcharts(1)">7月28日</el-button>
-          <el-button type="primary" @click="initLeftEcharts(2)">7月29日</el-button>
-          <el-button type="primary" @click="initLeftEcharts(3)">7月30日</el-button>
-          <el-button type="success" @click="countNumber()">感染总数</el-button>
-        </div>
+<!--        <div slot="header" >-->
+          <el-form :inline="true" :model="patientDay" >
+            <el-form-item label="查询日期">
+              <el-select v-model="patientDay.day">
+                <el-option label="7月28日" value="1"></el-option>
+                <el-option label="7月29日" value="2"></el-option>
+                <el-option label="7月30日" value="3"></el-option>
+                <el-option label="不分日期" value="4"></el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item>
+              <el-button type="primary" @click="initLeftEcharts(patientDay.day)">查询</el-button>
+            </el-form-item>
+          </el-form>
         <div class="leftChart" id="left_chart" :style="myChartLeftStyle" ></div>
       </el-card>
       <el-card class="card">
-        <div slot="header" style="padding-top: 10px; padding-bottom: 10px"><h3>感染信息</h3></div>
+        <h3>感染信息</h3>
+<!--        <div slot="header" style="padding-top: 10px; padding-bottom: 10px"></div>-->
         <div class="rightChart" id="right_chart" :style="myChartRightStyle" ></div>
       </el-card>
     </div>
@@ -31,9 +40,13 @@ export default {
       allPotentialPatients:[2,3,4,5],
       dayPatients:[0,0,0],
       dayPotentialPatients:[0,0,0],
+      areaAllPatients:[0,0,0,0],
+      areaAllPotentialPatients:[0,0,0,0],
       myChartLeftStyle: { float: "left", width: "100%", height: "400px" }, //图表样式
       myChartRightStyle: { float: "right", width: "100%", height: "400px" }, //图表样式
-      day:0
+      patientDay:{
+        day:"1"
+      }
     };
   },
   created() {
@@ -41,7 +54,7 @@ export default {
     this.dayPotentialPatients = [0,0,0];
     this.allPatients = [0,0,0,0];
     this.allPotentialPatients = [0,0,0,0];
-    this.day = 0;
+    // this.day = 0;
   },
   mounted() {
     this.initLeftEcharts(1);
@@ -57,7 +70,7 @@ export default {
         series: [
           {
             type: "bar", //形状为柱状图
-            data: this.allPatients,
+            data: this.areaAllPatients,
             name: "感染者数", // legend属性
             label: {
               // 柱状图上方文本标签，默认展示数值信息
@@ -68,7 +81,7 @@ export default {
           },
           {
             type: "bar", //形状为柱状图
-            data: this.allPotentialPatients,
+            data: this.areaAllPotentialPatients,
             name: "潜在患者数", // legend属性
             label: {
               // 柱状图上方文本标签，默认展示数值信息
@@ -81,7 +94,10 @@ export default {
           }
         ]
       };
-      const my_Chart = echarts.init(document.getElementById("left_chart"));
+      let my_Chart= echarts.getInstanceByDom(document.getElementById("left_chart")); //有的话就获取已有echarts实例的DOM节点。
+      if (my_Chart== null) { // 如果不存在，就进行初始化。
+        my_Chart = echarts.init(document.getElementById("left_chart"));
+      }
       my_Chart.setOption(mulColumn);
       window.addEventListener("resize", () => {
         my_Chart.resize();
@@ -89,62 +105,66 @@ export default {
 
     },
     initLeftEcharts(batch) {
-      this.$http.get('countPatientAndPotential',{ params:{ batch:batch}}).then((res)=>{
-        // this.day = this.day + 1;
-        // console.log(this.day)
-        let arrX = [];
-        let arrY = [];
-        res.data.forEach(ele=>{
-          arrX.push(ele.patient);
-          arrY.push(ele.potential_patient);
-        });
-        // if(this.day < 4 ) {}
-        for (let i = 0; i < arrX.length; i++) {
-          this.allPatients[i] += arrX[i];
-        }
-        for (let j = 0; j < arrY.length; j++) {
-          this.allPotentialPatients[j] += arrY[j];
-        }
-        // 多列柱状图
-        const mulColumnZZTData = {
-          xAxis: { data: this.xData },
-          // 图例
-          legend: { data: ["感染者数", "潜在患者数"], top: "0%" },
-          yAxis: {},
-          series: [
-            {
-              type: "bar", //形状为柱状图
-              data: arrX,
-              name: "感染者数", // legend属性
-              label: {
-                // 柱状图上方文本标签，默认展示数值信息
-                show: true,
-                position: "top"
+      if (batch==="4"){
+        this.countNumber();
+      }else {
+        this.$http.get('countPatientAndPotential',{ params:{ batch:batch}}).then((res)=>{
+          let arrX = [];
+          let arrY = [];
+          res.data.forEach(ele=>{
+            arrX.push(ele.patient);
+            arrY.push(ele.potential_patient);
+          });
+          for (let i = 0; i < arrX.length; i++) {
+            this.allPatients[i] += arrX[i];
+          }
+          for (let j = 0; j < arrY.length; j++) {
+            this.allPotentialPatients[j] += arrY[j];
+          }
+          // 多列柱状图
+          const mulColumnZZTData = {
+            xAxis: { data: this.xData },
+            // 图例
+            legend: { data: ["感染者数", "潜在患者数"], top: "0%" },
+            yAxis: {},
+            series: [
+              {
+                type: "bar", //形状为柱状图
+                data: arrX,
+                name: "感染者数", // legend属性
+                label: {
+                  // 柱状图上方文本标签，默认展示数值信息
+                  show: true,
+                  position: "top"
+                },
+                itemStyle: { color: '#ff4a4a' }
               },
-              itemStyle: { color: '#ff4a4a' }
-            },
-            {
-              type: "bar", //形状为柱状图
-              data: arrY,
-              name: "潜在患者数", // legend属性
-              label: {
-                // 柱状图上方文本标签，默认展示数值信息
-                show: true,
-                position: "top"
-              },
-              itemStyle: {
-                color: '#ffe74a'
+              {
+                type: "bar", //形状为柱状图
+                data: arrY,
+                name: "潜在患者数", // legend属性
+                label: {
+                  // 柱状图上方文本标签，默认展示数值信息
+                  show: true,
+                  position: "top"
+                },
+                itemStyle: {
+                  color: '#ffe74a'
+                }
               }
-            }
-          ]
-        };
-        const myChart = echarts.init(document.getElementById("left_chart"));
-        myChart.setOption(mulColumnZZTData);
-        //随着屏幕大小调节图表
-        window.addEventListener("resize", () => {
-          myChart.resize();
-        });
-      })
+            ]
+          };
+          let myLeftChart= echarts.getInstanceByDom(document.getElementById("left_chart")); //有的话就获取已有echarts实例的DOM节点。
+          if (myLeftChart== null) { // 如果不存在，就进行初始化。
+            myLeftChart = echarts.init(document.getElementById("left_chart"));
+          }
+          myLeftChart.setOption(mulColumnZZTData);
+          //随着屏幕大小调节图表
+          window.addEventListener("resize", () => {
+            myLeftChart.resize();
+          });
+        })
+      }
     },
     async initRightEcharts(){
       for (let batch = 1; batch <= 3; batch++) {
@@ -156,6 +176,12 @@ export default {
             dayPatient.push(ele.patient);
             dayPotentialPatient.push(ele.potential_patient);
           });
+          for(let i =0; i< 4;i++){
+            this.areaAllPatients[i] += dayPatient[i];
+            this.areaAllPotentialPatients[i] += dayPotentialPatient[i];
+          }
+          console.log(this.areaAllPatients);
+          console.log(this.areaAllPotentialPatients);
           this.dayPatients[batch-1] = dayPatient.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
           this.dayPotentialPatients[batch-1] = dayPotentialPatient.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
         } catch (error) {
@@ -200,7 +226,10 @@ export default {
           }
         ]
       };
-      const myRightChart = echarts.init(document.getElementById("right_chart"));
+      let myRightChart= echarts.getInstanceByDom(document.getElementById("right_chart")); //有的话就获取已有echarts实例的DOM节点。
+      if (myRightChart== null) { // 如果不存在，就进行初始化。
+        myRightChart = echarts.init(document.getElementById("right_chart"));
+      }
       myRightChart.setOption(mulColumnZZTData2);
       window.addEventListener("resize", () => {
         myRightChart.resize();

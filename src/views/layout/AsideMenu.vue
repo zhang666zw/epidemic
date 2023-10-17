@@ -11,10 +11,6 @@
       <el-menu-item >
         <span slot="title">传染病预警与关联分析系統</span>
       </el-menu-item>
-      <el-menu-item index="/messageInput">
-        <i class="el-icon-upload2"></i>
-        <span slot="title">信息输入模块</span>
-      </el-menu-item>
       <el-submenu index="/reasoning">
         <template slot="title">
           <i class="el-icon-magic-stick"></i>
