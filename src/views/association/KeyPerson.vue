@@ -1,7 +1,7 @@
 <template>
   <div>
     <el-card><h2>{{area}}重点筛查对象</h2></el-card>
-    <el-table style="width: 100%"  :header-cell-style="{ textAlign: 'center'}" :cell-style="{ textAlign: 'center'}"  border :data="KeyPerson">
+    <el-table style="width: 100%"  :header-cell-style="{ textAlign: 'center'}" :cell-style="{ textAlign: 'center'}"  border :data="pageKeyPerson">
       <el-table-column prop="contactName" label="姓名"></el-table-column>
       <el-table-column prop="areaCode" label="地区">
         <template v-slot="scope">
@@ -25,14 +25,17 @@
         </template>
       </el-table-column>
       <el-table-column prop="potentialPatientProbability" label="感染概率"></el-table-column>
-<!--      <el-table-column prop="batch" label="感染时间">-->
-<!--        <template v-slot="scope">-->
-<!--          <span v-if="scope.row.batch === '1'">2023-7-28</span>-->
-<!--          <span v-else-if="scope.row.batch === '2'">2023-7-29</span>-->
-<!--          <span v-else>2023-7-30</span>-->
-<!--        </template>-->
-<!--      </el-table-column>-->
     </el-table>
+    <el-pagination
+      class="pagination-container"
+      :current-page="currentPage"
+      :page-sizes="[3, 5, 8, 10]"
+      :page-size="pageSize"
+      layout="total, sizes, prev, pager, next, jumper"
+      :total="totalItems"
+      @size-change="handleSizeChange"
+      @current-change="handleCurrentChange"
+    ></el-pagination>
   </div>
 </template>
 
@@ -41,18 +44,47 @@ export default {
   data(){
     return {
       date:'', batch:0, areaCode:'',area:'',
-      KeyPerson:[]
+      KeyPerson:[],
+      pageKeyPerson:[],
+      currentPage: 1, // 当前页码
+      pageSize: 10,   // 每页显示的条目数
+      totalItems: 100, // 总条目数
     }
   },
 
   methods:{
+    getPageInfo(){
+      //清空pageTicket中的数据
+      this.pageKeyPerson=[];
+      // 获取当前页的数据
+      for(let i = ( this.currentPage - 1 ) * this.pageSize ; i < this.totalItems ; i++){
+        //把遍历的数据添加到pageTicket里面
+        this.pageKeyPerson.push(this.KeyPerson[i]);
+        //判断是否达到一页的要求
+        if(this.pageKeyPerson.length===this.pageSize) break;
+      }
+    },
+    // 处理每页显示条目数变化
+    handleSizeChange(newSize) {
+      this.pageSize = newSize;
+      // this.$emit('custom-event');
+      this.loadKeyPerson();
+    },
+    // 处理页码变化
+    handleCurrentChange(newPage) {
+      this.currentPage = newPage;
+      // this.$emit('custom-event');
+      this.loadKeyPerson();
+    },
     loadKeyPerson(){
-      this.$http.get('keyPersonFilter',{ params: { date: this.date, batch: this.batch, areaCode: this.areaCode }}).then((res)=> {
-        this.KeyPerson = res.data
+      this.$http.get('keyPersonFilter',{ params: { batch: this.batch, areaCode: this.areaCode }}).then((res)=> {
+        this.KeyPerson = res.data;
+        this.totalItems = res.data.length
+        this.getPageInfo()
       })},
   },
   created() {
-    this.date = this.$route.query.date;
+    // this.date = this.$route.query.date;
     this.batch = this.$route.query.batch;
     this.areaCode = this.$route.query.areaCode;
     if(this.areaCode === '10001'){
@@ -69,5 +101,11 @@ export default {
 </script>
 
 <style scoped>
-
+  .pagination-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px; /* 可根据需要调整上边距 */
+    font-size: 100px;
+  }
 </style>

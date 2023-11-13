@@ -2,7 +2,11 @@
   <div class="header" style="height: 50px">
     <span v-if="!isCollapse" class="el-icon-s-fold" @click="changeMenu()"></span>
     <span v-else class="el-icon-s-unfold" @click="changeMenu()"></span>
-    <span ><bread-crumb style="padding-left: 40px;margin-top: -18px"></bread-crumb></span>
+    <span>
+      <bread-crumb style="padding-left: 40px;margin-top: -18px"></bread-crumb>
+    </span>
+
+
   </div>
 </template>
 

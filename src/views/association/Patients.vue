@@ -5,9 +5,9 @@
       <el-form :inline="true" :model="formInline" class="demo-form-inline" style="margin-top: 30px">
         <el-form-item label="查询日期">
           <el-select v-model="formInline.day" placeholder="查询天数">
-            <el-option label="7月28日" value="2023-7-28"></el-option>
-            <el-option label="7月29日" value="2023-7-29"></el-option>
-            <el-option label="7月30日" value="2023-7-30"></el-option>
+            <el-option label="7月28日" value="1"></el-option>
+            <el-option label="7月29日" value="2"></el-option>
+            <el-option label="7月30日" value="3"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="传播区域">
@@ -20,8 +20,8 @@
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="showRecord()">查询</el-button>
-          <el-button type="danger"  style="margin-left: 200px" @click="findObject()">筛查重点潜在患者</el-button>
-          <el-button type="primary" @click="findChain()">传播链推测</el-button>
+<!--          <el-button type="danger"  style="position: relative;left: 730px" @click="findObject()">筛查重点潜在患者</el-button>-->
+          <el-button type="primary" style="position: relative;left: 730px" @click="findChain()">传播链推测</el-button>
         </el-form-item>
       </el-form>
     </el-card>
@@ -37,7 +37,7 @@ export default {
   data() {
     return {
       formInline: {
-        day: '2023-7-28',
+        day: '1',
         region: '10001'
       },
       batch: 0,
@@ -45,16 +45,16 @@ export default {
   },
   methods: {
     // 筛查重点对象
-    findObject(){
-      this.$router.push({
-        path: '/association/keyPerson',
-        query: { date:this.formInline.day,batch:this.batch,areaCode:this.formInline.region}
-      })
-    },
+    // findObject(){
+    //   this.$router.push({
+    //     path: '/association/keyPerson',
+    //     query: { date:this.formInline.day,batch:this.batch,areaCode:this.formInline.region}
+    //   })
+    // },
     showRecord() {
-      if (this.formInline.day === '2023-7-28'){
+      if (this.formInline.day === '1'){
         this.batch = 1
-      }else if (this.formInline.day === '2023-7-29'){
+      }else if (this.formInline.day === '2'){
         this.batch = 2
       }else {
         this.batch = 3

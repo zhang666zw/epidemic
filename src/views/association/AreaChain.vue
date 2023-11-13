@@ -14,6 +14,10 @@
       return {
         date:'', batch:'', areaCode:'', area:'',
         patients:[],
+        patientID:[],
+        potentialID:[],
+        person:[],
+        personRelation:[],
         Patients:[],
         patientsName:[],
         potentialPatients:[],
@@ -23,6 +27,7 @@
     created() {
       // this.potentialPatients = [];
       this.patients = [];
+      this.links = [];
       this.batch = this.$route.query.batch;
       this.date = this.$route.query.date;
       this.areaCode = this.$route.query.areaCode;
@@ -44,47 +49,97 @@
       async initEcharts() {
         try {
           const response = await this.$http.get('getRelevanceChain', { params: { batch: this.batch, areaCode: this.areaCode } });
-          for (let i = 0; i < response.data.length; i += 2) {
-            const obj = response.data[i];
-            const link = {
-              source: obj.patientName1.toString(),
-              target: obj.patientName2.toString(),
-            };
-            this.links.push(link);
-          }
-          console.log(this.links)
-          response.data.forEach((ele) => {
-            if (!(this.patientsName.includes(ele.patientName1))){
-              this.patients.push(ele.patientId1);
-              this.patientsName.push(ele.patientName1)
+          this.personRelation = [];
+          response.data.forEach((ele)=>{
+            const obj = {
+              source: ele.patientId1.toString(),
+              target: ele.patientId2.toString(),
             }
-          });
-          console.log(this.patients)
-          console.log(this.patientsName)
-          this.Patients = this.patientsName.map((element) => ({
-            name: element.toString(), // 将元素转换为字符串
-            category: "感染者",
-          }));
-          console.log(this.Patients)
-          for (let i = 0; i < this.patients.length; i++) {
-            const potentialResponse = await this.$http.get('getPotentialPatients', { params: { patient_id: this.patients[i], batch: this.batch } });
-            potentialResponse.data.forEach((element) => {
-              const newObj = {
-                name: element.contactName,
-                category:"潜在患者"
+            this.personRelation.push(obj)
+            if(!(this.patientID.includes((ele.patientId1)))){
+              this.patientID.push(ele.patientId1);
+              const patient1 = {
+                name: ele.patientName1,
+                id: ele.patientId1.toString(),
+                category: "感染者"
               }
-              this.Patients.push(newObj);
-              const link2 = {
-                source: this.patientsName[i].toString(),
-                target: element.contactName.toString(),
+              this.person.push(patient1)
+            }
+            if(!(this.patientID.includes((ele.patientId2)))){
+              this.patientID.push(ele.patientId2);
+              const patient2 = {
+                name: ele.patientName2,
+                id: ele.patientId2.toString(),
+                category: "感染者"
+              }
+              this.person.push(patient2)
+            }
+          })
+          // console.log(this.person)
+          // console.log(this.personRelation)
+          // for (let i = 0; i < response.data.length; i++) {
+          //   const obj = response.data[i];
+          //   const link = {
+          //     source: obj.patientName1.toString(),
+          //     target: obj.patientName2.toString(),
+          //   };
+          //   this.links.push(link);
+          // }
+          // response.data.forEach((ele) => {
+          //   if (this.patientsName.includes(ele.patientName1)){
+          //     if(!(this.patientsName.includes(ele.patientName2))){
+          //       this.patients.push(ele.patientId2);
+          //       this.patientsName.push(ele.patientName2)
+          //     }
+          //   }else{
+          //     this.patients.push(ele.patientId1);
+          //     this.patientsName.push(ele.patientName1)
+          //   }
+          //   if (this.patientsName.includes(ele.patientName2)){
+          //     if(!(this.patientsName.includes(ele.patientName1))){
+          //       this.patients.push(ele.patientId2);
+          //       this.patientsName.push(ele.patientName2)
+          //     }
+          //   }else{
+          //     this.patients.push(ele.patientId2);
+          //     this.patientsName.push(ele.patientName2)
+          //   }
+          //
+          // });
+          // this.Patients = this.patientsName.map((element) => ({
+          //   name: element.toString(), // 将元素转换为字符串
+          //   category: "感染者",
+          // }));
+          // console.log("4")
+          // console.log(this.Patients)
+          let a = '10001';
+          for (let i = 0; i < this.patientID.length; i++) {
+            const potentialResponse = await this.$http.get('getPotentialPatients', { params: { patient_id: this.patientID[i], batch: this.batch } });
+            potentialResponse.data.forEach((ele) => {
+              if(!(this.potentialID.includes((ele.contactId)))){
+                this.potentialID.push(ele.contactId);
+                const potentialPatient = {
+                  name: ele.contactName,
+                  category:"潜在患者",
+                  id:ele.contactId.toString() + a,
+                }
+                this.person.push(potentialPatient);
+              }
+              const obj = {
+                source: this.patientID[i].toString(),
+                target: ele.contactId.toString() + a,
               };
-              this.links.push(link2)
+              // console.log(obj)
+              this.personRelation.push(obj)
             });
           }
         } catch (error) {
           // 处理错误
           console.error('发生错误：', error);
         }
+        // 示例用法
+        // const duplicateNames = this.checkDuplicateNames(this.person);
+        // console.log(duplicateNames);
         let option = {
           backgroundColor: '#EEF1F3',
           color: ["#ee6666", "#fac858",],
@@ -141,8 +196,8 @@
               width: 2,
               curveness: 0, //关系线的曲度，支持从 0 到 1 的值，值越大曲度越大。
             },
-            data:this.Patients,
-            links:this.links,
+            data:this.person,
+            links:this.personRelation,
           },
           ],
         };
@@ -152,14 +207,48 @@
         window.onresize = function () {
           myChart.resize();
         }
-      }
+      },
+      // findDuplicateObjects(array) {
+      //   const objectMap = new Map();
+      //   const duplicateObjects = [];
+      //
+      //   for (const item of array) {
+      //     const itemJSON = JSON.stringify(item);
+      //
+      //     if (objectMap.has(itemJSON)) {
+      //       duplicateObjects.push(item);
+      //     } else {
+      //       objectMap.set(itemJSON, true);
+      //     }
+      //   }
+      //
+      //   return duplicateObjects;
+      // },
+      // checkDuplicateNames(array) {
+      //   const nameSet = new Set();
+      //   const duplicates = [];
+      //
+      //   for (const item of array) {
+      //     if (nameSet.has(item.id)) {
+      //       duplicates.push(item.id);
+      //     } else {
+      //       nameSet.add(item.id);
+      //     }
+      //   }
+      //
+      //   if (duplicates.length > 0) {
+      //     return duplicates;
+      //   } else {
+      //     return "没有重复的姓名";
+      //   }
+      // }
     },
   }
 </script>
 
 <style scoped>
-.echarts_container {
-  width: 100%;
-  height: 600px;
-}
+  .echarts_container {
+    width: 100%;
+    height: 600px;
+  }
 </style>

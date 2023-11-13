@@ -4,14 +4,14 @@
     <h2>区域感染趋势预测</h2>
     <el-form :inline="true" :model="day" class="demo-form-inline" style="margin-top: 30px" >
       <el-form-item label="感染日期">
-        <el-select v-model="day.date" placeholder="查询日期">
-          <el-option label="7月28日" value="2023-7-28"></el-option>
-          <el-option label="7月29日" value="2023-7-29"></el-option>
-          <el-option label="7月30日" value="2023-7-30"></el-option>
+        <el-select v-model="day.batch" placeholder="查询日期">
+          <el-option label="7月28日" value="1"></el-option>
+          <el-option label="7月29日" value="2"></el-option>
+          <el-option label="7月30日" value="3"></el-option>
         </el-select>
       </el-form-item>
       <el-form-item>
-        <el-button style="position: relative;left:1200px" type="primary" @click="showPrediction(day.date)">趋势预测</el-button>
+        <el-button style="position: relative;left:1200px" type="primary" @click="showPrediction(day.batch)">趋势预测</el-button>
       </el-form-item>
     </el-form>
   </el-card>
@@ -28,7 +28,7 @@
           </el-select>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="showAreaPrediction(area.areaCode,day.date)">查询</el-button>
+          <el-button type="primary" @click="showAreaPrediction(area.areaCode,day.batch)">查询</el-button>
         </el-form-item>
       </el-form>
       <div class="leftChart" id="left_chart" :style="myChartLeftStyle" ></div>
@@ -48,7 +48,7 @@ import * as echarts from "echarts";
 export default {
   data(){
     return{
-      day:{ date:'2023-7-28'},
+      day:{ batch:"1" },
       area:{ areaCode:"10001"},
       date:[],
       ShuShanPatientsInfo:[0,0,0],          //蜀山区患者数
@@ -66,18 +66,27 @@ export default {
     }
   },
   mounted() {
-    this.showPrediction("2023-7-28")
-    this.showAreaPrediction("2023-7-28","10001")
+    this.showPrediction("1")
   },
   methods:{
-    showPrediction(day){
-      if(day === "2023-7-28"){
+    async showPrediction(day){
+      if(day === "1"){
         this.date = ["7月28日","7月29日","7月30日"]
-      }else if(day === "2023-7-29"){
+      }else if(day === "2"){
         this.date = ["7月29日","7月30日","7月31日"]
       }else{
         this.date = ["7月30日","7月31日","8月1日"]
       }
+      const res = await this.$http.get('forecast', { params: { areaCode: "all", batch: day } });
+      console.log(res.data);
+      let responseData = res.data;
+      this.AllPatientInfo = Object.values(responseData)
+        .map(valueArray => valueArray[0]);
+      console.log(this.AllPatientInfo)
+      this.AllPotentialPatientInfo = Object.values(responseData)
+        .map(valueArray => valueArray[1]);
+      console.log(this.AllPotentialPatientInfo)
+      await this.showAreaPrediction(this.area.areaCode, day)
       const mulRightColumn = {
         xAxis: { data: this.date },
         // 图例
@@ -120,29 +129,25 @@ export default {
       });
 
     },
-    showAreaPrediction(day,areaCode){
+    async showAreaPrediction(areaCode,day){
       let areaPatients = [];
       let areaPotentialPatients = [];
-      if(day === "2023-7-28"){
+      if(day === "1"){
         this.date = ["7月28日","7月29日","7月30日"]
-      }else if(day === "2023-7-29"){
+      }else if(day === "2"){
         this.date = ["7月29日","7月30日","7月31日"]
       }else{
         this.date = ["7月30日","7月31日","8月1日"]
       }
-      if(areaCode === "10001"){
-        areaPatients = this.ShuShanPatientsInfo;
-        areaPotentialPatients  = this.ShuShanPotentialPatientsInfo;
-      }else if (areaCode === "10002"){
-        areaPatients = this.LuYangPatientInfo;
-        areaPotentialPatients  = this.LuYangPotentialPatientInfo;
-      }else if (areaCode === "10003"){
-        areaPatients = this.BaoHePatientInfo;
-        areaPotentialPatients  = this.BaoHePotentialPatientInfo;
-      }else{
-        areaPatients = this.YaoHaiPatientInfo;
-        areaPotentialPatients  = this.YaoHaiPotentialPatientInfo;
-      }
+      const res = await this.$http.get('forecast', { params: { areaCode: areaCode, batch: day } });
+      console.log(res.data);
+      let responseData = res.data;
+      areaPatients = Object.values(responseData)
+        .map(valueArray => valueArray[0]);
+      console.log(areaPatients)
+      areaPotentialPatients = Object.values(responseData)
+        .map(valueArray => valueArray[1]);
+      console.log(areaPotentialPatients)
       const mulLeftColumn = {
         xAxis: { data: this.date },
         // 图例
@@ -183,7 +188,6 @@ export default {
       window.addEventListener("resize", () => {
         myLeftChart.resize();
       });
-
     }
   }
 

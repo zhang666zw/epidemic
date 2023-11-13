@@ -14,7 +14,7 @@
       <el-submenu index="/reasoning">
         <template slot="title">
           <i class="el-icon-magic-stick"></i>
-          <span>推理模块</span>
+          <span>预警模块</span>
         </template>
         <el-menu-item-group>
           <el-menu-item index="/reasoning/patients">
@@ -38,7 +38,7 @@
       <el-submenu index="/association">
         <template slot="title">
           <i class="el-icon-attract"></i>
-          <span>关联模块</span>
+          <span>关联分析模块</span>
         </template>
         <el-menu-item-group>
           <el-menu-item index="/association/patients">

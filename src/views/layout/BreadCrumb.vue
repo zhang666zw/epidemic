@@ -2,7 +2,9 @@
   <div>
     <el-breadcrumb separator-class="el-icon-arrow-right">
       <el-breadcrumb-item  v-for="item in navs" :key="item.path" :to="{ path: item.path}">{{item.meta.title}}</el-breadcrumb-item>
+      <el-button style="position: relative;left: 1400px;bottom: 15px" type="primary" @click="logout()">退出</el-button>
     </el-breadcrumb>
+
   </div>
 </template>
 
@@ -10,6 +12,12 @@
 export default {
   data(){
     return{
+    }
+  },
+  methods:{
+    logout(){
+      window.sessionStorage.clear();
+      this.$router.push('/login')
     }
   },
   computed:{

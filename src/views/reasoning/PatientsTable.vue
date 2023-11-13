@@ -59,7 +59,7 @@ export default {
       patients:[],
       pagePatients:[],
       currentPage: 1, // 当前页码
-      pageSize: 8,   // 每页显示的条目数
+      pageSize: 10,   // 每页显示的条目数
       totalItems: 100, // 总条目数
     }
   },
@@ -88,7 +88,7 @@ export default {
     },
     // 加载数据的方法，根据当前页码和每页显示的条目数来加载数据
     showDayPatients(days) {
-      this.$http.get('getPatientsByDate',{params: { date: days}}).then((res)=>{
+      this.$http.get('getPatientsByDate',{params: { batch: days}}).then((res)=>{
         this.patients = res.data
         this.totalItems = res.data.length
         this.getPageInfo()
@@ -96,7 +96,7 @@ export default {
     },
     //展示患者记录
     showPatients(days,areaCode){
-      this.$http.get('getPatients',{ params:{ date:days,areaCode:areaCode }}).then((res)=>{
+      this.$http.get('getPatients',{ params:{ batch:days,areaCode:areaCode }}).then((res)=>{
         this.patients = res.data
         this.totalItems = res.data.length
         this.getPageInfo()

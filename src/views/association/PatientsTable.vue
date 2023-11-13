@@ -52,90 +52,9 @@ export default {
   data(){
     return{
       patients:[],
-      example:[{
-        "epidemic_id": "1",
-        "area_code": "10003",
-        "patient_name": "李达康",
-        "patient_address": "中环云邸",
-        "patient_tel": "13356650001",
-        "patient_symptom": "1",
-        "patient_age": "34",
-        "patient_sex": "1"
-      },
-        {
-          "epidemic_id": "1",
-          "area_code": "10003",
-          "patient_name": "陈岩石",
-          "patient_address": "尚泽紫金公馆",
-          "patient_tel": "18056650002",
-          "patient_symptom": "3",
-          "patient_age": "22",
-          "patient_sex": "0"
-        },
-        {
-          "epidemic_id": "1",
-          "area_code": "10003",
-          "patient_name": "吴心怡",
-          "patient_address": "中环云邸",
-          "patient_tel": "17718015601",
-          "patient_symptom": "2",
-          "patient_age": "55",
-          "patient_sex": "0"
-        },
-        {
-          "epidemic_id": "1",
-          "area_code": "10003",
-          "patient_name": "陆亦可",
-          "patient_address": "中环云邸",
-          "patient_tel": "19910011003",
-          "patient_symptom": "4",
-          "patient_age": "43",
-          "patient_sex": "1"
-        },
-        {
-          "epidemic_id": "1",
-          "area_code": "10003",
-          "patient_name": "沙瑞金",
-          "patient_address": "尚泽紫金公馆",
-          "patient_tel": "13099556767",
-          "patient_symptom": "2",
-          "patient_age": "34",
-          "patient_sex": "0"
-        },
-        {
-          "epidemic_id": "1",
-          "area_code": "10003",
-          "patient_name": "赵东来",
-          "patient_address": "合景天韵公馆",
-          "patient_tel": "19840534141",
-          "patient_symptom": "2",
-          "patient_age": "45",
-          "patient_sex": "1"
-        },
-        {
-          "epidemic_id": "1",
-          "area_code": "10003",
-          "patient_name": "陈海",
-          "patient_address": "安徽大学家属院",
-          "patient_tel": "17828482904",
-          "patient_symptom": "3",
-          "patient_age": "38",
-          "patient_sex": "0"
-        },
-        {
-          "epidemic_id": "1",
-          "area_code": "10003",
-          "patient_name": "梁璐",
-          "patient_address": "万科悦城",
-          "patient_tel": "11287851366",
-          "patient_symptom": "4",
-          "patient_age": "57",
-          "patient_sex": "0"
-        },],
-      pagePatients:[
-      ],
+      pagePatients:[],
       currentPage: 1, // 当前页码
-      pageSize: 8,   // 每页显示的条目数
+      pageSize: 10,   // 每页显示的条目数
       totalItems: 100, // 总条目数
     }
   },
@@ -169,7 +88,7 @@ export default {
     //   })
     // },
     showPatients(days,areaCode){
-      this.$http.get('getPatients',{ params: { date:days,areaCode:areaCode } }).then((res)=>{
+      this.$http.get('getPatients',{ params: { batch:days,areaCode:areaCode } }).then((res)=>{
         this.patients = res.data
         this.totalItems = res.data.length
         this.getPageInfo()
