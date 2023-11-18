@@ -2,8 +2,11 @@
   <div class="chain">
     <el-card>
       <h2 style="display: inline-block">区域传播链</h2>
-      <el-button style="position: relative;left: 1250px" type="danger"  @click="findObject()">筛查重点潜在患者</el-button>
-      <el-button style="position: relative; left: 1250px" type="success" @click="showChains()">传播链可视化</el-button>
+      <span style="position: fixed;right: 80px;top:65px">
+        <el-button type="danger"  @click="findObject()">筛查重点潜在患者</el-button>
+        <el-button type="success" @click="showChains()">传播链可视化</el-button>
+      </span>
+
     </el-card>
     <el-table class="el-table" :header-cell-style="{ textAlign: 'center'}" :cell-style="{ textAlign: 'center'}" border :data="pageChains">
       <el-table-column prop="correlationChainCode" label="传播区域">
@@ -21,7 +24,7 @@
       <el-table-column prop="patientName2" label="患者乙姓名"></el-table-column>
       <el-table-column fixed="right" label="操作" width="200px">
         <template v-slot="scope">
-          <el-button type="primary" size="medium" icon="el-icon-search"  @click="loadPotentialContacts(scope.row.patientId1)">查看潜在患者</el-button>
+          <el-link type="primary" size="medium" :underline="false"  @click="loadPotentialContacts(scope.row.patientId1)">查看潜在患者</el-link>
         </template>
       </el-table-column>
     </el-table>

@@ -2,8 +2,8 @@
   <div>
     <el-table style="width: 100%"  :header-cell-style="{ textAlign: 'center'}" :cell-style="{ textAlign: 'center'}"  stripe border :data="pagePatients">
       <el-table-column prop="patientName" label="姓名"></el-table-column>
-      <el-table-column prop="epidemicId" label="传染病" width="100">流行性感冒</el-table-column>
-      <el-table-column prop="areaCode" label="地区" width="100">
+      <el-table-column prop="epidemicId" label="传染病" width="200">流行性感冒</el-table-column>
+      <el-table-column prop="areaCode" label="地区" width="200">
         <template v-slot="scope">
           <span v-if="scope.row.areaCode === '10001'">蜀山区</span>
           <span v-else-if="scope.row.areaCode === '10002'">庐阳区</span>
@@ -11,16 +11,16 @@
           <span v-else>瑶海区</span>
         </template>
       </el-table-column>
-      <el-table-column prop="patientAddress" label="住址"></el-table-column>
-      <el-table-column prop="patientTel" label="联系方式" width="180"></el-table-column>
-      <el-table-column prop="patientSymptom" label="症状">
-        <template v-slot="scope">
-          <span v-if="scope.row.patientSymptom === 1">无症状</span>
-          <span v-else-if="scope.row.patientSymptom === 2">较轻</span>
-          <span v-else-if="scope.row.patientSymptom === 3">一般</span>
-          <span v-else>严重</span>
-        </template>
-      </el-table-column>
+      <el-table-column prop="patientAddress" label="住址" width="200"></el-table-column>
+      <el-table-column prop="patientTel" label="联系方式" width="200"></el-table-column>
+<!--      <el-table-column prop="patientSymptom" label="症状">-->
+<!--        <template v-slot="scope">-->
+<!--          <span v-if="scope.row.patientSymptom === 1">无症状</span>-->
+<!--          <span v-else-if="scope.row.patientSymptom === 2">较轻</span>-->
+<!--          <span v-else-if="scope.row.patientSymptom === 3">一般</span>-->
+<!--          <span v-else>严重</span>-->
+<!--        </template>-->
+<!--      </el-table-column>-->
       <el-table-column prop="patientAge" label="年龄">
         <template v-slot="scope">
           <span>{{scope.row.patientAge}}岁</span>
@@ -32,10 +32,11 @@
           <span  v-else-if="scope.row.patientSex === 0">女</span>
         </template>
       </el-table-column>
-      <el-table-column label="操作" width="350px">
+      <el-table-column label="操作" width="300px">
         <template v-slot="scope">
-          <el-button size="medium" type="warning" icon="el-icon-search" @click="findContacts(scope.row.patientId,scope.row.batch)">查看接触者</el-button>
-          <el-button size="medium" type="danger" icon="el-icon-search" @click="findPotentialPatients(scope.row.patientId,scope.row.batch)">查看潜在患者</el-button>
+<!--          <el-link type="primary" >主要链接</el-link>-->
+          <el-link type="warning" :underline="false" @click="findContacts(scope.row.patientId,scope.row.batch)">查看接触者</el-link>
+          <el-link style="padding-left: 20px" :underline="false" type="danger"  @click="findPotentialPatients(scope.row.patientId,scope.row.batch)">查看潜在患者</el-link>
         </template>
       </el-table-column>
     </el-table>
@@ -129,11 +130,11 @@ export default {
 </script>
 
 <style scoped>
-.pagination-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-top: 20px; /* 可根据需要调整上边距 */
-  font-size: 100px;
-}
+  .pagination-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px; /* 可根据需要调整上边距 */
+    font-size: 100px;
+  }
 </style>

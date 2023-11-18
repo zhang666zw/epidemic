@@ -75,43 +75,7 @@
               this.person.push(patient2)
             }
           })
-          // console.log(this.person)
-          // console.log(this.personRelation)
-          // for (let i = 0; i < response.data.length; i++) {
-          //   const obj = response.data[i];
-          //   const link = {
-          //     source: obj.patientName1.toString(),
-          //     target: obj.patientName2.toString(),
-          //   };
-          //   this.links.push(link);
-          // }
-          // response.data.forEach((ele) => {
-          //   if (this.patientsName.includes(ele.patientName1)){
-          //     if(!(this.patientsName.includes(ele.patientName2))){
-          //       this.patients.push(ele.patientId2);
-          //       this.patientsName.push(ele.patientName2)
-          //     }
-          //   }else{
-          //     this.patients.push(ele.patientId1);
-          //     this.patientsName.push(ele.patientName1)
-          //   }
-          //   if (this.patientsName.includes(ele.patientName2)){
-          //     if(!(this.patientsName.includes(ele.patientName1))){
-          //       this.patients.push(ele.patientId2);
-          //       this.patientsName.push(ele.patientName2)
-          //     }
-          //   }else{
-          //     this.patients.push(ele.patientId2);
-          //     this.patientsName.push(ele.patientName2)
-          //   }
-          //
-          // });
-          // this.Patients = this.patientsName.map((element) => ({
-          //   name: element.toString(), // 将元素转换为字符串
-          //   category: "感染者",
-          // }));
-          // console.log("4")
-          // console.log(this.Patients)
+
           let a = '10001';
           for (let i = 0; i < this.patientID.length; i++) {
             const potentialResponse = await this.$http.get('getPotentialPatients', { params: { patient_id: this.patientID[i], batch: this.batch } });

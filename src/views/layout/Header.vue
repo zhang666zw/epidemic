@@ -7,6 +7,7 @@
     </span>
 
 
+
   </div>
 </template>
 
@@ -25,13 +26,13 @@ export default {
 
 
 <style lang="less" scoped>
-.el-icon-s-fold{
-  margin-top: 20px;
-  padding-left: 10px;
-  font-size: 20px;
-}
-.el-icon-s-unfold{
-  margin-top: 20px;
-  font-size: 20px;
-}
+  .el-icon-s-fold{
+    margin-top: 20px;
+    padding-left: 10px;
+    font-size: 20px;
+  }
+  .el-icon-s-unfold{
+    margin-top: 20px;
+    font-size: 20px;
+  }
 </style>

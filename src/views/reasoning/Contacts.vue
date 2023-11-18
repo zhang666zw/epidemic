@@ -2,7 +2,7 @@
   <div>
     <el-card>
       <h2 style="display: inline-block">患者id为{{id}}的接触者</h2>
-      <el-button style="position: relative;left: 1200px" size="medium" type="primary" icon="el-icon-search" @click="reasonPotentialPatients()">推理潜在患者</el-button>
+      <el-button style="position: fixed;right:100px" size="medium" type="primary" icon="el-icon-search" @click="reasonPotentialPatients()">推理潜在患者</el-button>
     </el-card>
     <el-table style="width: 100%"  :header-cell-style="{ textAlign: 'center'}" :cell-style="{ textAlign: 'center'}"  border :data="pageContacts">
       <el-table-column prop="contactName" label="姓名"></el-table-column>

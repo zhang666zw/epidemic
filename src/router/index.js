@@ -2,6 +2,18 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import Layout from '../views/layout/Index.vue'
 import PotentialPatients from '../views/reasoning/PotentialPatients.vue'
+import Reasoning from '../views/reasoning/Index.vue'
+import Patients from "../views/reasoning/Patients.vue";
+import Contacts from "../views/reasoning/Contacts.vue";
+import Association from '../views/association/Index.vue'
+import PatientChain from '../views/association/Patients.vue'
+import KeyPerson from "../views/association/KeyPerson.vue";
+import AreaInfo from "../views/reasoning/AreaInfo.vue";
+import ChainFind from '../views/association/Chain.vue'
+import ChainContact from '../views/association/PotentialPatients.vue'
+import AreaChain from "../views/association/AreaChain.vue";
+import TrendPrediction from "../views/reasoning/TrendPrediction.vue";
+
 import 'normalize.css'
 import '../assets/css/base.css'
 import '../assets/css/gloabl.css'
@@ -16,24 +28,24 @@ const RouterReplace = Router.prototype.replace
 Router.prototype.replace = function replace(to) {
   return RouterReplace.call(this, to).catch(err => err)
 }
-const Login = () => import('../views/layout/Login.vue')
-const Reasoning = () => import('../views/reasoning/Index.vue')
-const Patients = () => import('../views/reasoning/Patients.vue')
-const Contacts = () => import('../views/reasoning/Contacts.vue')
-const Association = () => import('../views/association/Index.vue')
-const PatientChain = () => import('../views/association/Patients.vue')
-const KeyPerson = () => import('../views/association/KeyPerson.vue')
-const AreaInfo = () => import('../views/reasoning/AreaInfo.vue')
-const ChainFind = () => import('../views/association/Chain.vue')
-const ChainContact = () => import('../views/association/PotentialPatients.vue')
-const AreaChain = () => import('../views/association/AreaChain.vue')
-const TrendPrediction = () => import('../views/reasoning/TrendPrediction.vue')
+// const Login = () => import('../views/layout/Login.vue')
+// const Reasoning = () => import('../views/reasoning/Index.vue')
+// const Patients = () => import('../views/reasoning/Patients.vue')
+// const Contacts = () => import('../views/reasoning/Contacts.vue')
+// const Association = () => import('../views/association/Index.vue')
+// const PatientChain = () => import('../views/association/Patients.vue')
+// const KeyPerson = () => import('../views/association/KeyPerson.vue')
+// const AreaInfo = () => import('../views/reasoning/AreaInfo.vue')
+// const ChainFind = () => import('../views/association/Chain.vue')
+// const ChainContact = () => import('../views/association/PotentialPatients.vue')
+// const AreaChain = () => import('../views/association/AreaChain.vue')
+// const TrendPrediction = () => import('../views/reasoning/TrendPrediction.vue')
 
 
 const router = new Router({
   mode: 'history',
   routes: [
-    { path: '/login', name:'login', component: Login },
+    // { path: '/login', name:'login', component: Login },
     // path: '/reasoning/patients', component: Layout,
     {
       path: '/', redirect:'/reasoning/patients',component: Layout,
@@ -93,10 +105,36 @@ const router = new Router({
   ]
 })
 
-router.beforeEach((to,from,next)=>{
-  if(to.path === '/login') return next();
-  const token = window.sessionStorage.getItem('token')
-  if(!token) return next('/login')
-  next()
- })
+
+// router.onError((error) => {
+//   const jsPattern = /Loading chunk (\S)+ failed/g
+//   const cssPattern = /Loading CSS chunk (\S)+ failed/g
+//   const isChunkLoadFailed = error.message.match(jsPattern || cssPattern)
+//   const targetPath = router.history.pending.fullPath
+//   if (isChunkLoadFailed) {
+//     localStorage.setItem('targetPath', targetPath)
+//     window.location.reload()
+//   }
+// })
+
+router.onError((error) => {
+  const pattern = /Loading chunk (\d)+ failed/g;
+  const isChunkLoadFailed = error.message.match(pattern);
+  console.log(isChunkLoadFailed,'/Loading chunk (\d)+ failed/g','路由懒加载找不到对应的moudle')
+  if (isChunkLoadFailed) {
+    window.location.reload();
+  }else{
+    console.log(error)
+  }
+});
+
+
+// router.beforeEach((to,from,next)=>{
+//   if(to.path === '/login') return next();
+//   const token = window.sessionStorage.getItem('token')
+//   if(!token) return next('/login')
+//   next()
+//  })
+
+
 export default router

@@ -1,10 +1,9 @@
 <template>
   <div>
-    <el-breadcrumb separator-class="el-icon-arrow-right">
+    <el-breadcrumb separator-class="el-icon-arrow-right" class="container">
       <el-breadcrumb-item  v-for="item in navs" :key="item.path" :to="{ path: item.path}">{{item.meta.title}}</el-breadcrumb-item>
-      <el-button style="position: relative;left: 1400px;bottom: 15px" type="primary" @click="logout()">退出</el-button>
     </el-breadcrumb>
-
+    <el-button size="medium" style="position: fixed; right: 100px;top:7px" type="primary" @click="logout()">退出</el-button>
   </div>
 </template>
 
@@ -33,9 +32,4 @@ export default {
 </script>
 
 <style lang="less" scoped>
-//div{
-//  height: 50px;
-//  line-height: 50px;
-//  padding-left:20px ;
-//}
 </style>

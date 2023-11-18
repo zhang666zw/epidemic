@@ -13,14 +13,14 @@
       </el-table-column>
       <el-table-column prop="patientAddress" label="住址"></el-table-column>
       <el-table-column prop="patientTel" label="联系方式"></el-table-column>
-      <el-table-column prop="patientSymptom" label="症状">
-        <template v-slot="scope">
-          <span v-if="scope.row.patientSymptom === 1">无症状</span>
-          <span v-else-if="scope.row.patientSymptom === 2">较轻</span>
-          <span v-else-if="scope.row.patientSymptom === 3">一般</span>
-          <span v-else>严重</span>
-        </template>
-      </el-table-column>
+<!--      <el-table-column prop="patientSymptom" label="症状">-->
+<!--        <template v-slot="scope">-->
+<!--          <span v-if="scope.row.patientSymptom === 1">无症状</span>-->
+<!--          <span v-else-if="scope.row.patientSymptom === 2">较轻</span>-->
+<!--          <span v-else-if="scope.row.patientSymptom === 3">一般</span>-->
+<!--          <span v-else>严重</span>-->
+<!--        </template>-->
+<!--      </el-table-column>-->
       <el-table-column prop="patientAge" label="年龄">
         <template v-slot="scope">
           <span>{{scope.row.patientAge}}岁</span>
@@ -99,11 +99,11 @@ export default {
 </script>
 
 <style scoped>
-.pagination-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-top: 20px; /* 可根据需要调整上边距 */
-  font-size: 100px;
-}
+  .pagination-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px; /* 可根据需要调整上边距 */
+    font-size: 100px;
+  }
 </style>

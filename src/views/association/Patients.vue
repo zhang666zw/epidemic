@@ -20,8 +20,8 @@
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="showRecord()">查询</el-button>
-<!--          <el-button type="danger"  style="position: relative;left: 730px" @click="findObject()">筛查重点潜在患者</el-button>-->
-          <el-button type="primary" style="position: relative;left: 730px" @click="findChain()">传播链推测</el-button>
+<!--          style="position: relative;left: 730px"-->
+          <el-button type="primary" @click="findChain()">传播链推测</el-button>
         </el-form-item>
       </el-form>
     </el-card>
@@ -44,13 +44,6 @@ export default {
     }
   },
   methods: {
-    // 筛查重点对象
-    // findObject(){
-    //   this.$router.push({
-    //     path: '/association/keyPerson',
-    //     query: { date:this.formInline.day,batch:this.batch,areaCode:this.formInline.region}
-    //   })
-    // },
     showRecord() {
       if (this.formInline.day === '1'){
         this.batch = 1
@@ -59,7 +52,6 @@ export default {
       }else {
         this.batch = 3
       }
-      // console.log(this.formInline.day,this.batch)
       this.$refs.show.showPatients(this.formInline.day,this.formInline.region)
     },
     findChain(){
@@ -68,13 +60,10 @@ export default {
         query: { date: this.formInline.day , areaCode: this.formInline.region,batch:this.batch }
       })
     },
-    countChains(){
-      this.$http.get('relevanceAll')
-    }
+
   },
   mounted() {
     this.showRecord();
-    this.countChains()
   }
 }
 </script>

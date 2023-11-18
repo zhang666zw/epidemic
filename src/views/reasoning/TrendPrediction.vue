@@ -11,7 +11,7 @@
         </el-select>
       </el-form-item>
       <el-form-item>
-        <el-button style="position: relative;left:1200px" type="primary" @click="showPrediction(day.batch)">趋势预测</el-button>
+        <el-button type="primary" @click="showPrediction(day.batch)">趋势预测</el-button>
       </el-form-item>
     </el-form>
   </el-card>
