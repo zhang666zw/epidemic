@@ -3,12 +3,19 @@
   <el-card>
     <h2>区域感染趋势预测</h2>
     <el-form :inline="true" :model="day" class="demo-form-inline" style="margin-top: 30px" >
-      <el-form-item label="感染日期">
-        <el-select v-model="day.batch" placeholder="查询日期">
-          <el-option label="7月28日" value="1"></el-option>
-          <el-option label="7月29日" value="2"></el-option>
-          <el-option label="7月30日" value="3"></el-option>
-        </el-select>
+      <el-form-item label="查询日期">
+        <el-date-picker
+          v-model="day.batch"
+          type="date"
+          value-format="yyyy-MM-dd"
+          placeholder="选择日期">
+        </el-date-picker>
+<!--      <el-form-item label="感染日期">-->
+<!--        <el-select v-model="day.batch" placeholder="查询日期">-->
+<!--          <el-option label="7月28日" value="1"></el-option>-->
+<!--          <el-option label="7月29日" value="2"></el-option>-->
+<!--          <el-option label="7月30日" value="3"></el-option>-->
+<!--        </el-select>-->
       </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="showPrediction(day.batch)">趋势预测</el-button>
@@ -48,7 +55,7 @@ import * as echarts from "echarts";
 export default {
   data(){
     return{
-      day:{ batch:"1" },
+      day:{ batch:"2023-07-28" },
       area:{ areaCode:"10001"},
       date:[],
       ShuShanPatientsInfo:[0,0,0],          //蜀山区患者数
@@ -63,21 +70,32 @@ export default {
       AllPotentialPatientInfo:[0,0,0],          //总体潜在患者数
       myChartLeftStyle: { float: "left", width: "100%", height: "400px" }, //图表样式
       myChartRightStyle: { float: "right", width: "100%", height: "400px" }, //图表样式
+      tag:""
     }
   },
   mounted() {
-    this.showPrediction("1")
+    this.showPrediction("2023-07-28")
   },
   methods:{
     async showPrediction(day){
-      if(day === "1"){
+      if (day === "2023-07-28"){
+        this.tag = "1";
         this.date = ["7月28日","7月29日","7月30日"]
-      }else if(day === "2"){
+      }else if (day === "2023-07-29"){
+        this.tag = "2";
         this.date = ["7月29日","7月30日","7月31日"]
-      }else{
+      }else if (day === "2023-07-30"){
+        this.tag = "3";
         this.date = ["7月30日","7月31日","8月1日"]
       }
-      const res = await this.$http.get('forecast', { params: { areaCode: "all", batch: day } });
+      // if(day === "1"){
+      //   this.date = ["7月28日","7月29日","7月30日"]
+      // }else if(day === "2"){
+      //   this.date = ["7月29日","7月30日","7月31日"]
+      // }else{
+      //   this.date = ["7月30日","7月31日","8月1日"]
+      // }
+      const res = await this.$http.get('forecast', { params: { areaCode: "all", batch: this.tag } });
       console.log(res.data);
       let responseData = res.data;
       this.AllPatientInfo = Object.values(responseData)
@@ -86,7 +104,8 @@ export default {
       this.AllPotentialPatientInfo = Object.values(responseData)
         .map(valueArray => valueArray[1]);
       console.log(this.AllPotentialPatientInfo)
-      await this.showAreaPrediction(this.area.areaCode, day)
+      //day变成tag
+      await this.showAreaPrediction(this.area.areaCode, this.tag)
       const mulRightColumn = {
         xAxis: { data: this.date },
         // 图例
@@ -132,14 +151,24 @@ export default {
     async showAreaPrediction(areaCode,day){
       let areaPatients = [];
       let areaPotentialPatients = [];
-      if(day === "1"){
+      if (day === "2023-07-28"){
+        this.tag = "1";
         this.date = ["7月28日","7月29日","7月30日"]
-      }else if(day === "2"){
+      }else if (day === "2023-07-29"){
+        this.tag = "2";
         this.date = ["7月29日","7月30日","7月31日"]
-      }else{
+      }else if (day === "2023-07-30"){
+        this.tag = "3";
         this.date = ["7月30日","7月31日","8月1日"]
       }
-      const res = await this.$http.get('forecast', { params: { areaCode: areaCode, batch: day } });
+      // if(day === "1"){
+      //   this.date = ["7月28日","7月29日","7月30日"]
+      // }else if(day === "2"){
+      //   this.date = ["7月29日","7月30日","7月31日"]
+      // }else{
+      //   this.date = ["7月30日","7月31日","8月1日"]
+      // }
+      const res = await this.$http.get('forecast', { params: { areaCode: areaCode, batch: this.tag } });
       console.log(res.data);
       let responseData = res.data;
       areaPatients = Object.values(responseData)

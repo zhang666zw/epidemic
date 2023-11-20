@@ -21,10 +21,10 @@
             <i class="el-icon-user-solid"></i>
             <span slot="title">感染者模块</span>
           </el-menu-item>
-          <el-menu-item index="/reasoning/potentialPatients" disabled="disabled">
-            <i class="el-icon-user"></i>
-            <span slot="title">潜在患者模块</span>
-          </el-menu-item>
+<!--          <el-menu-item index="/reasoning/potentialPatients" disabled="disabled">-->
+<!--            <i class="el-icon-user"></i>-->
+<!--            <span slot="title">潜在患者模块</span>-->
+<!--          </el-menu-item>-->
           <el-menu-item index="/reasoning/areaInfo">
             <i class="el-icon-menu"></i>
             <span slot="title">区域感染信息</span>
@@ -45,10 +45,10 @@
             <i class="el-icon-share"></i>
             <span slot="title">传播链模块</span>
           </el-menu-item>
-          <el-menu-item index="/association/keyPerson" disabled="disabled">
-            <i class="el-icon-s-custom"></i>
-            <span slot="title">重点对象模块</span>
-          </el-menu-item>
+<!--          <el-menu-item index="/association/keyPerson" disabled="disabled">-->
+<!--            <i class="el-icon-s-custom"></i>-->
+<!--            <span slot="title">重点对象模块</span>-->
+<!--          </el-menu-item>-->
         </el-menu-item-group>
       </el-submenu>
     </el-menu>
@@ -78,7 +78,7 @@ export default {
       if(meta.activeMenu){
         this.active = meta.activeMenu
       }else {
-        this.active = path
+        // this.active = path
       }
     }
   }

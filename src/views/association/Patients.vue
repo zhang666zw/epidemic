@@ -4,11 +4,18 @@
       <h2>区域感染者信息</h2>
       <el-form :inline="true" :model="formInline" class="demo-form-inline" style="margin-top: 30px">
         <el-form-item label="查询日期">
-          <el-select v-model="formInline.day" placeholder="查询天数">
-            <el-option label="7月28日" value="1"></el-option>
-            <el-option label="7月29日" value="2"></el-option>
-            <el-option label="7月30日" value="3"></el-option>
-          </el-select>
+          <el-date-picker
+            v-model="formInline.day"
+            type="date"
+            value-format="yyyy-MM-dd"
+            placeholder="选择日期">
+          </el-date-picker>
+<!--        <el-form-item label="查询日期">-->
+<!--          <el-select v-model="formInline.day" placeholder="查询天数">-->
+<!--            <el-option label="7月28日" value="1"></el-option>-->
+<!--            <el-option label="7月29日" value="2"></el-option>-->
+<!--            <el-option label="7月30日" value="3"></el-option>-->
+<!--          </el-select>-->
         </el-form-item>
         <el-form-item label="传播区域">
           <el-select v-model="formInline.region" placeholder="传播区域">
@@ -37,27 +44,32 @@ export default {
   data() {
     return {
       formInline: {
-        day: '1',
+        day: '2023-07-28',
         region: '10001'
       },
       batch: 0,
+      tag:""
     }
   },
   methods: {
     showRecord() {
-      if (this.formInline.day === '1'){
+      if (this.formInline.day === '2023-07-28'){
         this.batch = 1
-      }else if (this.formInline.day === '2'){
+        this.tag = "1"
+      }else if (this.formInline.day === '2023-07-29'){
         this.batch = 2
-      }else {
+        this.tag = "2"
+      }else if (this.formInline.day === '2023-07-30'){
         this.batch = 3
+        this.tag = "3"
       }
-      this.$refs.show.showPatients(this.formInline.day,this.formInline.region)
+      this.$refs.show.showPatients(this.tag,this.formInline.region)
     },
     findChain(){
       this.$router.push({
         name: 'chain',
-        query: { date: this.formInline.day , areaCode: this.formInline.region,batch:this.batch }
+        //day改成tag
+        query: { date: this.tag , areaCode: this.formInline.region,batch:this.batch }
       })
     },
 

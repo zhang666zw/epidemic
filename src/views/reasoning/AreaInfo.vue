@@ -6,12 +6,18 @@
 <!--        <div slot="header" >-->
           <el-form :inline="true" :model="patientDay" >
             <el-form-item label="查询日期">
-              <el-select v-model="patientDay.day">
-                <el-option label="7月28日" value="1"></el-option>
-                <el-option label="7月29日" value="2"></el-option>
-                <el-option label="7月30日" value="3"></el-option>
-                <el-option label="不分日期" value="4"></el-option>
-              </el-select>
+              <el-date-picker
+                v-model="patientDay.day"
+                type="date"
+                value-format="yyyy-MM-dd"
+                placeholder="选择日期">
+              </el-date-picker>
+<!--              <el-select v-model="patientDay.day">-->
+<!--                <el-option label="7月28日" value="1"></el-option>-->
+<!--                <el-option label="7月29日" value="2"></el-option>-->
+<!--                <el-option label="7月30日" value="3"></el-option>-->
+<!--                <el-option label="不分日期" value="4"></el-option>-->
+<!--              </el-select>-->
             </el-form-item>
             <el-form-item>
               <el-button type="primary" @click="initLeftEcharts(patientDay.day)">查询</el-button>
@@ -45,8 +51,9 @@ export default {
       myChartLeftStyle: { float: "left", width: "100%", height: "400px" }, //图表样式
       myChartRightStyle: { float: "right", width: "100%", height: "400px" }, //图表样式
       patientDay:{
-        day:"1"
-      }
+        day:"2023-07-28"
+      },
+      batch:0
     };
   },
   created() {
@@ -57,7 +64,7 @@ export default {
     // this.day = 0;
   },
   mounted() {
-    this.initLeftEcharts(1);
+    this.initLeftEcharts(this.patientDay.day);
     this.initRightEcharts();
   },
   methods: {
@@ -104,11 +111,18 @@ export default {
       });
 
     },
-    initLeftEcharts(batch) {
-      if (batch==="4"){
+    initLeftEcharts(day) {
+      if (day === "2023-07-28"){
+        this.batch = 1;
+      }else if (day === "2023-07-29"){
+        this.batch = 2;
+      }else if (day === "2023-07-30"){
+        this.batch = 3;
+      }
+      if (day==="4"){
         this.countNumber();
       }else {
-        this.$http.get('countPatientAndPotential',{ params:{ batch:batch}}).then((res)=>{
+        this.$http.get('countPatientAndPotential',{ params:{ batch:this.batch}}).then((res)=>{
           let arrX = [];
           let arrY = [];
           res.data.forEach(ele=>{
