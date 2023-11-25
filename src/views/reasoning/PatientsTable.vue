@@ -2,8 +2,8 @@
   <div>
     <el-table style="width: 100%"  :header-cell-style="{ textAlign: 'center'}" :cell-style="{ textAlign: 'center'}"  stripe border :data="pagePatients">
       <el-table-column prop="patientName" label="姓名"></el-table-column>
-      <el-table-column prop="epidemicId" label="传染病" width="200">流行性感冒</el-table-column>
-      <el-table-column prop="areaCode" label="地区" width="200">
+      <el-table-column prop="epidemicId" label="传染病" >流行性感冒</el-table-column>
+      <el-table-column prop="areaCode" label="地区" >
         <template v-slot="scope">
           <span v-if="scope.row.areaCode === '10001'">蜀山区</span>
           <span v-else-if="scope.row.areaCode === '10002'">庐阳区</span>
@@ -11,22 +11,14 @@
           <span v-else>瑶海区</span>
         </template>
       </el-table-column>
-      <el-table-column prop="patientAddress" label="住址" width="200"></el-table-column>
-      <el-table-column prop="patientTel" label="联系方式" width="200"></el-table-column>
-<!--      <el-table-column prop="patientSymptom" label="症状">-->
-<!--        <template v-slot="scope">-->
-<!--          <span v-if="scope.row.patientSymptom === 1">无症状</span>-->
-<!--          <span v-else-if="scope.row.patientSymptom === 2">较轻</span>-->
-<!--          <span v-else-if="scope.row.patientSymptom === 3">一般</span>-->
-<!--          <span v-else>严重</span>-->
-<!--        </template>-->
-<!--      </el-table-column>-->
+      <el-table-column prop="patientAddress" label="住址" ></el-table-column>
+      <el-table-column prop="patientTel" label="联系方式" ></el-table-column>
       <el-table-column prop="patientAge" label="年龄">
         <template v-slot="scope">
           <span>{{scope.row.patientAge}}岁</span>
         </template>
       </el-table-column>
-      <el-table-column prop="patientSex" label="性别">
+      <el-table-column prop="patientSex" label="性别" >
         <template v-slot="scope">
           <span v-if="scope.row.patientSex === 1">男</span>
           <span  v-else-if="scope.row.patientSex === 0">女</span>
@@ -34,7 +26,6 @@
       </el-table-column>
       <el-table-column label="操作" width="300px">
         <template v-slot="scope">
-<!--          <el-link type="primary" >主要链接</el-link>-->
           <el-link type="warning" :underline="false" @click="findContacts(scope.row.patientId,scope.row.batch)">查看接触者</el-link>
           <el-link style="padding-left: 20px" :underline="false" type="danger"  @click="findPotentialPatients(scope.row.patientId,scope.row.batch)">查看潜在患者</el-link>
         </template>
@@ -43,7 +34,7 @@
     <el-pagination
       class="pagination-container"
       :current-page="currentPage"
-      :page-sizes="[3, 5, 8, 10]"
+      :page-sizes="[5, 8, 10]"
       :page-size="pageSize"
       layout="total, sizes, prev, pager, next, jumper"
       :total="totalItems"
@@ -57,8 +48,7 @@
 export default {
   data(){
     return{
-      patients:[],
-      pagePatients:[],
+      patients:[], pagePatients:[],
       currentPage: 1, // 当前页码
       pageSize: 10,   // 每页显示的条目数
       totalItems: 100, // 总条目数

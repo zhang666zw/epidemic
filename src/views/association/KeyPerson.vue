@@ -29,7 +29,7 @@
     <el-pagination
       class="pagination-container"
       :current-page="currentPage"
-      :page-sizes="[3, 5, 8, 10]"
+      :page-sizes="[5, 8, 10]"
       :page-size="pageSize"
       layout="total, sizes, prev, pager, next, jumper"
       :total="totalItems"

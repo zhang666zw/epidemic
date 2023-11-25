@@ -1,9 +1,9 @@
 <template>
-  <div class="header" style="height: 50px">
-    <span v-if="!isCollapse" class="el-icon-s-fold" @click="changeMenu()"></span>
-    <span v-else class="el-icon-s-unfold" @click="changeMenu()"></span>
-    <span>
-      <bread-crumb style="padding-left: 40px;margin-top: -18px"></bread-crumb>
+  <div class="header" style="height: 50px;background-color: #3364CA;">
+    <span style="color: white" v-if="!isCollapse" class="el-icon-s-fold" @click="changeMenu()"></span>
+    <span style="color: white" v-else class="el-icon-s-unfold" @click="changeMenu()"></span>
+    <span >
+      <bread-crumb style="padding-left: 40px;margin-top: -18px;color: white"></bread-crumb>
     </span>
 
 

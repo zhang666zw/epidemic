@@ -8,8 +8,9 @@
 </template>
 
 <script>
-  import * as echarts from "echarts";
-  export default {
+import * as echarts from "echarts";
+
+export default {
     data() {
       return {
         date:'', batch:'', areaCode:'', area:'',
@@ -61,7 +62,9 @@
               const patient1 = {
                 name: ele.patientName1,
                 id: ele.patientId1.toString(),
-                category: "感染者"
+                category: "感染者",
+                address: "无",
+                phone:"无"
               }
               this.person.push(patient1)
             }
@@ -70,7 +73,9 @@
               const patient2 = {
                 name: ele.patientName2,
                 id: ele.patientId2.toString(),
-                category: "感染者"
+                category: "感染者",
+                address: "无",
+                phone:"无"
               }
               this.person.push(patient2)
             }
@@ -84,6 +89,8 @@
                 this.potentialID.push(ele.contactId);
                 const potentialPatient = {
                   name: ele.contactName,
+                  address:ele.contactAddress,
+                  phone:ele.contactTel,
                   category:"潜在患者",
                   id:ele.contactId.toString() + a,
                 }
@@ -112,6 +119,18 @@
             show: true,
             data: ["感染者", "潜在患者"]
           }],
+          tooltip: {
+            formatter: function(x) {
+              // console.log(x.data);
+              if (x.data.name!=null){
+                return `<div><p><label>姓名：</label>${x.data.name}</p><p><label>住址：</label>${x.data.address}</p><p><label>电话：</label>${x.data.phone}</p></div>`;
+              }else if (x.data.target.length>6){
+                return `<div><p><label>感染者：</label>${x.data.source}</p><p><label>被感染者：</label>${x.data.target}</p></div>`;
+              }else {
+                return `<div><p><label>感染者：</label>${x.data.source}</p><p><label>关联感染者：</label>${x.data.target}</p></div>`;
+              }
+            },
+          },
           series: [{
             type: "graph",
             legendHoverLink: true,
@@ -139,6 +158,9 @@
             edgeSymbolSize: [4, 8],
             cursor: 'pointer',
             label: {
+                // formatter: function(x) {
+                //   return x.data.name;
+                // },
               show: true, // 图形上的文本标签， 可用于说明图形的一些数据信息， 比如值， 名称等
               fontStyle: "oblique",
               // position: "top",

@@ -24,18 +24,13 @@
   </el-card>
   <div class="card-container">
     <el-card class="card">
-      <!--        <div slot="header" >-->
       <el-form :inline="true" :model="area" >
         <el-form-item label="感染区域">
-          <el-select v-model="area.areaCode">
-            <el-option label="蜀山区" value="10001"></el-option>
-            <el-option label="庐阳区" value="10002"></el-option>
-            <el-option label="包河区" value="10003"></el-option>
-            <el-option label="瑶海区" value="10004"></el-option>
-          </el-select>
+          <el-cascader v-model="value" :options="options" @change="handleChange"></el-cascader>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="showAreaPrediction(area.areaCode,day.batch)">查询</el-button>
+<!--          area.areaCode改为value-->
+          <el-button type="primary" @click="showAreaPrediction(value,day.batch)">查询</el-button>
         </el-form-item>
       </el-form>
       <div class="leftChart" id="left_chart" :style="myChartLeftStyle" ></div>
@@ -70,7 +65,39 @@ export default {
       AllPotentialPatientInfo:[0,0,0],          //总体潜在患者数
       myChartLeftStyle: { float: "left", width: "100%", height: "400px" }, //图表样式
       myChartRightStyle: { float: "right", width: "100%", height: "400px" }, //图表样式
-      tag:""
+      tag:"",
+      value: ['1000','1'],
+      options: [
+        {
+          value: '1000', label: '合肥市',
+          children:
+            [ { value: '1', label: '蜀山区'},
+              { value: '2', label: '庐阳区'},
+              { value: '3', label: '包河区'},
+              { value: '4', label: '瑶海区'},]
+        },
+        {
+          value: '2', label: '江阴市',
+          children:
+            [
+              { value: '2', label: '澄江街道'},
+              { value: '3', label: '南闸街道'},
+              { value: '4', label: '云亭街道'},
+              { value: '5', label: '城东街道'},
+              { value: '6', label: '申港街道'},
+              { value: '7', label: '利港街道'},
+              { value: '8', label: '夏港街道'}]
+        },
+        {
+          value: '3', label: '郑州市',
+          children:
+            [
+              { value: '2', label: '中原区'},
+              { value: '3', label: '二七区'},
+              { value: '4', label: '金水区'},
+              { value: '5', label: '上街区'},
+              { value: '6', label: '惠济区'}]
+        }]
     }
   },
   mounted() {
@@ -88,13 +115,6 @@ export default {
         this.tag = "3";
         this.date = ["7月30日","7月31日","8月1日"]
       }
-      // if(day === "1"){
-      //   this.date = ["7月28日","7月29日","7月30日"]
-      // }else if(day === "2"){
-      //   this.date = ["7月29日","7月30日","7月31日"]
-      // }else{
-      //   this.date = ["7月30日","7月31日","8月1日"]
-      // }
       const res = await this.$http.get('forecast', { params: { areaCode: "all", batch: this.tag } });
       console.log(res.data);
       let responseData = res.data;
@@ -105,6 +125,7 @@ export default {
         .map(valueArray => valueArray[1]);
       console.log(this.AllPotentialPatientInfo)
       //day变成tag
+      this.area.areaCode= this.value.toString().replaceAll(',','')
       await this.showAreaPrediction(this.area.areaCode, this.tag)
       const mulRightColumn = {
         xAxis: { data: this.date },
@@ -148,7 +169,8 @@ export default {
       });
 
     },
-    async showAreaPrediction(areaCode,day){
+    async showAreaPrediction(Code,day){
+      let areaCode = this.value.toString().replaceAll(',','')
       let areaPatients = [];
       let areaPotentialPatients = [];
       if (day === "2023-07-28"){
@@ -161,13 +183,7 @@ export default {
         this.tag = "3";
         this.date = ["7月30日","7月31日","8月1日"]
       }
-      // if(day === "1"){
-      //   this.date = ["7月28日","7月29日","7月30日"]
-      // }else if(day === "2"){
-      //   this.date = ["7月29日","7月30日","7月31日"]
-      // }else{
-      //   this.date = ["7月30日","7月31日","8月1日"]
-      // }
+
       const res = await this.$http.get('forecast', { params: { areaCode: areaCode, batch: this.tag } });
       console.log(res.data);
       let responseData = res.data;
@@ -217,6 +233,9 @@ export default {
       window.addEventListener("resize", () => {
         myLeftChart.resize();
       });
+    },
+    handleChange(value) {
+      console.log(value);
     }
   }
 

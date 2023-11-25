@@ -2,11 +2,10 @@
   <div class="chain">
     <el-card>
       <h2 style="display: inline-block">区域传播链</h2>
-      <span style="position: fixed;right: 80px;top:65px">
+      <span style="position: fixed; right: 80px; top:65px">
         <el-button type="danger"  @click="findObject()">筛查重点潜在患者</el-button>
         <el-button type="success" @click="showChains()">传播链可视化</el-button>
       </span>
-
     </el-card>
     <el-table class="el-table" :header-cell-style="{ textAlign: 'center'}" :cell-style="{ textAlign: 'center'}" border :data="pageChains">
       <el-table-column prop="correlationChainCode" label="传播区域">

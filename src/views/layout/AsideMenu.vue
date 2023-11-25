@@ -1,11 +1,11 @@
 <template>
   <div>
+<!--    active-text-color="#ffd04b"-->
     <el-menu
       class="el-menu-vertical-demo"
-      background-color="#112f50"
-      text-color="#fff"
+      background-color="#fff"
+      text-color="9DA2AB"
       :default-active=active
-      active-text-color="#ffd04b"
       :collapse-transition="false"
       router :collapse="isCollapse">
       <el-menu-item >
@@ -89,10 +89,10 @@ export default {
 .el-menu{
   border-right: 0;
 
-  /deep/ .is-active {
-    background: #1e78bf !important;
-    color: #fff !important;
-  }
+  ///deep/ .is-active {
+  //  background: #1e78bf !important;
+  //  color: #fff !important;
+  //}
 }
 .el-menu-vertical-demo:not(.el-menu--collapse) {
   width: 200px;

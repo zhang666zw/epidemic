@@ -36,7 +36,7 @@ export default {
     //display: flex;
     .menu{
       //width: 200px;
-      background: #112f50;
+      background: #fff;
       position: fixed;
       left: 0;
       top: 0;
