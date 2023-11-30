@@ -1,14 +1,11 @@
 <template>
   <div>
-    <el-card><h2>{{area}}重点筛查对象</h2></el-card>
+    <el-card><h2>{{areaName}}重点筛查对象</h2></el-card>
     <el-table style="width: 100%"  :header-cell-style="{ textAlign: 'center'}" :cell-style="{ textAlign: 'center'}"  border :data="pageKeyPerson">
       <el-table-column prop="contactName" label="姓名"></el-table-column>
       <el-table-column prop="areaCode" label="地区">
         <template v-slot="scope">
-          <span v-if="scope.row.areaCode === '10001'">蜀山区</span>
-          <span v-else-if="scope.row.areaCode === '10002'">庐阳区</span>
-          <span v-else-if="scope.row.areaCode === '10003'">包河区</span>
-          <span v-else>瑶海区</span>
+          <span>{{areaMap[scope.row.areaCode]}}</span>
         </template>
       </el-table-column>
       <el-table-column prop="contactAddress" label="住址"></el-table-column>
@@ -43,12 +40,13 @@
 export default {
   data(){
     return {
-      date:'', batch:0, areaCode:'',area:'',
+      date:'', areaCode:'',areaName:'',
       KeyPerson:[],
       pageKeyPerson:[],
       currentPage: 1, // 当前页码
       pageSize: 10,   // 每页显示的条目数
       totalItems: 100, // 总条目数
+      areaMap:{"101010":"金水区","101011":"中原区","101012":"二七区","101013":"上街区","101014":"惠济区"}
     }
   },
 
@@ -77,7 +75,7 @@ export default {
       this.loadKeyPerson();
     },
     loadKeyPerson(){
-      this.$http.get('keyPersonFilter',{ params: { batch: this.batch, areaCode: this.areaCode }}).then((res)=> {
+      this.$http.get('keyPersonFilter',{ params: { date: this.date, areaCode: this.areaCode }}).then((res)=> {
         this.KeyPerson = res.data;
         this.totalItems = res.data.length
         this.getPageInfo()
@@ -85,17 +83,9 @@ export default {
   },
   created() {
     // this.date = this.$route.query.date;
-    this.batch = this.$route.query.batch;
+    this.date = this.$route.query.date;
     this.areaCode = this.$route.query.areaCode;
-    if(this.areaCode === '10001'){
-      this.area = '蜀山区'
-    }else if(this.areaCode === '10002'){
-      this.area = '庐阳区'
-    }else if(this.area === '10003'){
-      this.area = '包河区'
-    }else{
-      this.area = '瑶海区'
-    }
+    this.areaName = this.areaMap[this.areaCode]
     this.loadKeyPerson()
   },}
 </script>

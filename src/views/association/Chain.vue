@@ -10,10 +10,7 @@
     <el-table class="el-table" :header-cell-style="{ textAlign: 'center'}" :cell-style="{ textAlign: 'center'}" border :data="pageChains">
       <el-table-column prop="correlationChainCode" label="传播区域">
         <template v-slot="scope">
-          <span v-if="scope.row.correlationChainCode === '10001'">蜀山区</span>
-          <span v-else-if="scope.row.correlationChainCode === '10002'">庐阳区</span>
-          <span v-else-if="scope.row.correlationChainCode === '10003'">包河区</span>
-          <span v-else>瑶海区</span>
+          <span>{{areaMap[scope.row.correlationChainCode]}}</span>
         </template>
       </el-table-column>
       <el-table-column prop="correlationChainCode" label="传播链标识" ></el-table-column>
@@ -30,7 +27,7 @@
     <el-pagination
       class="pagination-container"
       :current-page="currentPage"
-      :page-sizes="[3, 5, 8, 10]"
+      :page-sizes="[5, 8, 10]"
       :page-size="pageSize"
       layout="total, sizes, prev, pager, next, jumper"
       :total="totalItems"
@@ -44,19 +41,20 @@
 export default {
   data(){
     return{
-      batch: 0, patients:[],
+      patients:[],
       date:'',  chains: [], areaCode:'',
       pageChains:[],
       currentPage: 1, // 当前页码
       pageSize: 10,   // 每页显示的条目数
       totalItems: 100, // 总条目数
+      areaMap:{"101010":"金水区","101011":"中原区","101012":"二七区","101013":"上街区","101014":"惠济区"}
     }
   },
   methods: {
     findObject(){
       this.$router.push({
         path: '/association/keyPerson',
-        query: { date:this.date,batch:this.batch,areaCode:this.areaCode}
+        query: { date:this.date,areaCode:this.areaCode}
       })
     },
     getPageInfo(){
@@ -85,12 +83,12 @@ export default {
     loadPotentialContacts(id){
       this.$router.push({
         name:'potential',
-        query: { patient_id: id, batch: this.batch},
+        query: { patient_id: id, date: this.date},
       })
     },
     //加载传播链数据
     loadChain(){
-      this.$http.get('/getRelevanceChain',{ params:{ batch:this.batch,areaCode:this.areaCode}}).then((res)=>{
+      this.$http.get('/getRelevanceChain',{ params:{ date:this.date,areaCode:this.areaCode}}).then((res)=>{
         res.data.forEach(ele=>{
           this.patients.push(ele.patientId1);
         });
@@ -102,7 +100,7 @@ export default {
     showChains(){
       this.$router.push({
         name:'AreaChain',
-        query:{ areaCode:this.areaCode,date:this.date,batch:this.batch,}
+        query:{ areaCode:this.areaCode,date:this.date}
       })
     }
   },
@@ -111,7 +109,6 @@ export default {
     this.patients = [];
     this.date = this.$route.query.date;
     this.areaCode = this.$route.query.areaCode;
-    this.batch = this.$route.query.batch;
     this.loadChain()
   },
 }

@@ -3,31 +3,23 @@
     <el-card><h2>区域感染信息</h2></el-card>
     <div class="card-container">
       <el-card class="card">
-<!--        <div slot="header" >-->
-          <el-form :inline="true" :model="patientDay" >
+          <el-form :inline="true" :model="Day" >
             <el-form-item label="查询日期">
               <el-date-picker
-                v-model="patientDay.day"
+                v-model="Day.day"
                 type="date"
                 value-format="yyyy-MM-dd"
                 placeholder="选择日期">
               </el-date-picker>
-<!--              <el-select v-model="patientDay.day">-->
-<!--                <el-option label="7月28日" value="1"></el-option>-->
-<!--                <el-option label="7月29日" value="2"></el-option>-->
-<!--                <el-option label="7月30日" value="3"></el-option>-->
-<!--                <el-option label="不分日期" value="4"></el-option>-->
-<!--              </el-select>-->
             </el-form-item>
             <el-form-item>
-              <el-button type="primary" @click="initLeftEcharts(patientDay.day)">查询</el-button>
+              <el-button type="primary" @click="initLeftEcharts(Day.day)">查询</el-button>
             </el-form-item>
           </el-form>
         <div class="leftChart" id="left_chart" :style="myChartLeftStyle" ></div>
       </el-card>
       <el-card class="card">
         <h3>感染信息</h3>
-<!--        <div slot="header" style="padding-top: 10px; padding-bottom: 10px"></div>-->
         <div class="rightChart" id="right_chart" :style="myChartRightStyle" ></div>
       </el-card>
     </div>
@@ -50,10 +42,7 @@ export default {
       areaAllPotentialPatients:[0,0,0,0],
       myChartLeftStyle: { float: "left", width: "100%", height: "400px" }, //图表样式
       myChartRightStyle: { float: "right", width: "100%", height: "400px" }, //图表样式
-      patientDay:{
-        day:"2023-07-28"
-      },
-      batch:0
+      Day:{ day:"2023-07-28"},
     };
   },
   created() {
@@ -61,10 +50,9 @@ export default {
     this.dayPotentialPatients = [0,0,0];
     this.allPatients = [0,0,0,0];
     this.allPotentialPatients = [0,0,0,0];
-    // this.day = 0;
   },
   mounted() {
-    this.initLeftEcharts(this.patientDay.day);
+    this.initLeftEcharts(this.Day.day);
     this.initRightEcharts();
   },
   methods: {
@@ -75,29 +63,20 @@ export default {
         legend: { data: ["感染者数", "潜在患者数"], top: "0%" },
         yAxis: {},
         series: [
-          {
-            type: "bar", //形状为柱状图
+          { type: "bar", //形状为柱状图
             data: this.areaAllPatients,
             name: "感染者数", // legend属性
-            label: {
-              // 柱状图上方文本标签，默认展示数值信息
-              show: true,
-              position: "top"
-            },
+            label: {// 柱状图上方文本标签，默认展示数值信息
+              show: true, position: "top"},
             itemStyle: { color: '#ff4a4a' }
           },
           {
             type: "bar", //形状为柱状图
             data: this.areaAllPotentialPatients,
             name: "潜在患者数", // legend属性
-            label: {
-              // 柱状图上方文本标签，默认展示数值信息
-              show: true,
-              position: "top"
-            },
-            itemStyle: {
-              color: '#ffe74a'
-            }
+            label: { // 柱状图上方文本标签，默认展示数值信息
+              show: true, position: "top"},
+            itemStyle: { color: '#ffe74a'}
           }
         ]
       };
@@ -112,78 +91,66 @@ export default {
 
     },
     initLeftEcharts(day) {
-      if (day === "2023-07-28"){
-        this.batch = 1;
-      }else if (day === "2023-07-29"){
-        this.batch = 2;
-      }else if (day === "2023-07-30"){
-        this.batch = 3;
-      }
-      if (day==="4"){
-        this.countNumber();
-      }else {
-        this.$http.get('countPatientAndPotential',{ params:{ batch:this.batch}}).then((res)=>{
-          let arrX = [];
-          let arrY = [];
-          res.data.forEach(ele=>{
-            arrX.push(ele.patient);
-            arrY.push(ele.potential_patient);
-          });
-          for (let i = 0; i < arrX.length; i++) {
-            this.allPatients[i] += arrX[i];
-          }
-          for (let j = 0; j < arrY.length; j++) {
-            this.allPotentialPatients[j] += arrY[j];
-          }
-          // 多列柱状图
-          const mulColumnZZTData = {
-            xAxis: { data: this.xData },
-            // 图例
-            legend: { data: ["感染者数", "潜在患者数"], top: "0%" },
-            yAxis: {},
-            series: [
-              {
-                type: "bar", //形状为柱状图
-                data: arrX,
-                name: "感染者数", // legend属性
-                label: {
-                  // 柱状图上方文本标签，默认展示数值信息
-                  show: true,
-                  position: "top"
-                },
-                itemStyle: { color: '#ff4a4a' }
+      this.$http.get('countPatientAndPotential',{ params:{ date:day}}).then((res)=>{
+        let arrX = [];
+        let arrY = [];
+        res.data.forEach(ele=>{
+          arrX.push(ele.patient);
+          arrY.push(ele.potential_patient);
+        });
+        for (let i = 0; i < arrX.length; i++) {
+          this.allPatients[i] += arrX[i];
+        }
+        for (let j = 0; j < arrY.length; j++) {
+          this.allPotentialPatients[j] += arrY[j];
+        }
+        // 多列柱状图
+        const mulColumnZZTData = {
+          xAxis: { data: this.xData },
+          // 图例
+          legend: { data: ["感染者数", "潜在患者数"], top: "0%" },
+          yAxis: {},
+          series: [
+            {
+              type: "bar", //形状为柱状图
+              data: arrX,
+              name: "感染者数", // legend属性
+              label: {
+                // 柱状图上方文本标签，默认展示数值信息
+                show: true, position: "top"},
+              itemStyle: { color: '#ff4a4a' }
+            },
+            {
+              type: "bar", //形状为柱状图
+              data: arrY,
+              name: "潜在患者数", // legend属性
+              label: {
+                // 柱状图上方文本标签，默认展示数值信息
+                show: true, position: "top"
               },
-              {
-                type: "bar", //形状为柱状图
-                data: arrY,
-                name: "潜在患者数", // legend属性
-                label: {
-                  // 柱状图上方文本标签，默认展示数值信息
-                  show: true,
-                  position: "top"
-                },
-                itemStyle: {
-                  color: '#ffe74a'
-                }
-              }
-            ]
-          };
-          let myLeftChart= echarts.getInstanceByDom(document.getElementById("left_chart")); //有的话就获取已有echarts实例的DOM节点。
-          if (myLeftChart== null) { // 如果不存在，就进行初始化。
-            myLeftChart = echarts.init(document.getElementById("left_chart"));
-          }
-          myLeftChart.setOption(mulColumnZZTData);
-          //随着屏幕大小调节图表
-          window.addEventListener("resize", () => {
-            myLeftChart.resize();
-          });
-        })
-      }
+              itemStyle: {color: '#ffe74a'}
+            }
+          ]
+        };
+        let myLeftChart= echarts.getInstanceByDom(document.getElementById("left_chart")); //有的话就获取已有echarts实例的DOM节点。
+        if (myLeftChart== null) { // 如果不存在，就进行初始化。
+          myLeftChart = echarts.init(document.getElementById("left_chart"));
+        }
+        myLeftChart.setOption(mulColumnZZTData);
+        //随着屏幕大小调节图表
+        window.addEventListener("resize", () => { myLeftChart.resize();});
+      })
     },
     async initRightEcharts(){
+      let dateStr = '2023-7-28'
       for (let batch = 1; batch <= 3; batch++) {
+        if(batch === 2){
+          dateStr = '2023-7-29'
+        }else if (batch === 3){
+          dateStr = '2023-7-28'
+        }
         try {
-          const res = await this.$http.get('countPatientAndPotential', { params: { batch: batch } });
+          const res = await this.$http.get('countPatientAndPotential', { params: { date: dateStr } });
           let dayPatient = [];
           let dayPotentialPatient = [];
           res.data.forEach(ele => {

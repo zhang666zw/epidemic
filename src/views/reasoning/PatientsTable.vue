@@ -5,10 +5,7 @@
       <el-table-column prop="epidemicId" label="传染病" >流行性感冒</el-table-column>
       <el-table-column prop="areaCode" label="地区" >
         <template v-slot="scope">
-          <span v-if="scope.row.areaCode === '10001'">蜀山区</span>
-          <span v-else-if="scope.row.areaCode === '10002'">庐阳区</span>
-          <span v-else-if="scope.row.areaCode === '10003'">包河区</span>
-          <span v-else>瑶海区</span>
+          <span>{{areaMap[scope.row.areaCode]}}</span>
         </template>
       </el-table-column>
       <el-table-column prop="patientAddress" label="住址" ></el-table-column>
@@ -26,8 +23,8 @@
       </el-table-column>
       <el-table-column label="操作" width="300px">
         <template v-slot="scope">
-          <el-link type="warning" :underline="false" @click="findContacts(scope.row.patientId,scope.row.batch)">查看接触者</el-link>
-          <el-link style="padding-left: 20px" :underline="false" type="danger"  @click="findPotentialPatients(scope.row.patientId,scope.row.batch)">查看潜在患者</el-link>
+          <el-link type="warning" :underline="false" @click="findContacts(scope.row.patientId)">查看接触者</el-link>
+          <el-link style="padding-left: 20px" :underline="false" type="danger"  @click="findPotentialPatients(scope.row.patientId)">查看潜在患者</el-link>
         </template>
       </el-table-column>
     </el-table>
@@ -48,10 +45,12 @@
 export default {
   data(){
     return{
+      date:'',
       patients:[], pagePatients:[],
       currentPage: 1, // 当前页码
       pageSize: 10,   // 每页显示的条目数
       totalItems: 100, // 总条目数
+      areaMap:{"101010":"金水区","101011":"中原区","101012":"二七区","101013":"上街区","101014":"惠济区"}
     }
   },
 
@@ -78,40 +77,36 @@ export default {
       this.$emit('custom-event');
     },
     // 加载数据的方法，根据当前页码和每页显示的条目数来加载数据
-    showDayPatients(days) {
-      this.$http.get('getPatientsByDate',{params: { batch: days}}).then((res)=>{
+    showDayPatients(date) {
+      this.$http.get('getPatientsByDate',{ params: { date: date}}).then((res)=>{
         this.patients = res.data
         this.totalItems = res.data.length
         this.getPageInfo()
       })
     },
     //展示患者记录
-    showPatients(days,areaCode){
-      this.$http.get('getPatients',{ params:{ batch:days,areaCode:areaCode }}).then((res)=>{
+    showPatients(date,areaCode){
+      this.$http.get('getPatientsByDateAndAreaCode',{ params:{ date:date,areaCode:areaCode }}).then((res)=>{
         this.patients = res.data
         this.totalItems = res.data.length
         this.getPageInfo()
       })
     },
-    loadData(days,areaCode){
-      if(areaCode ==='10005'){
-        this.showDayPatients(days)
-      }else {
-        this.showPatients(days,areaCode)
-      }
+    loadData(date,areaCode){
+      this.date = date;
+      this.showPatients(date,areaCode)
     },
     //找接触者
-    findContacts(id,batch){
+    findContacts(id){
       this.$router.push({
         name: 'contacts', // 一定要写这
-        query: { id: id, batch: batch,}
+        query: { id: id, date: this.date,}
       })
     },
-
-    findPotentialPatients(id,batch){
+    findPotentialPatients(id){
       this.$router.push({
         path:'potentialPatients',
-        query:{ id: id, batch: batch }
+        query:{ id: id, date: this.date }
       })
     }
   },

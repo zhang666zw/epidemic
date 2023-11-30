@@ -1,14 +1,11 @@
 <template>
   <div>
-    <el-card><h2>id为{{patient_id}}的患者关联的潜在患者</h2></el-card>
-    <el-table style="width: 100%; " border :data="pagePotentialPatients" >
+    <el-card><h2>患者{{patientName}}关联的潜在患者</h2></el-card>
+    <el-table border :data="pagePotentialPatients" :header-cell-style="{ textAlign: 'center'}" :cell-style="{ textAlign: 'center'}">
       <el-table-column prop="contactName" label="姓名"></el-table-column>
       <el-table-column prop="areaCode" label="地区">
         <template v-slot="scope">
-          <span v-if="scope.row.areaCode === '10001'">蜀山区</span>
-          <span v-else-if="scope.row.areaCode === '10002'">庐阳区</span>
-          <span v-else-if="scope.row.areaCode === '10003'">包河区</span>
-          <span v-else>瑶海区</span>
+          <span>{{areaMap[scope.row.areaCode]}}</span>
         </template>
       </el-table-column>
       <el-table-column prop="contactAddress" label="住址"></el-table-column>
@@ -29,7 +26,7 @@
     <el-pagination
       class="pagination-container"
       :current-page="currentPage"
-      :page-sizes="[3, 5, 8, 10]"
+      :page-sizes="[5, 8, 10]"
       :page-size="pageSize"
       layout="total, sizes, prev, pager, next, jumper"
       :total="totalItems"
@@ -43,11 +40,12 @@
   export default {
     data(){
       return{
-        patient_id:'', batch: 0 , potentialPatients:[],
+        id:'', potentialPatients:[],patientName:'',
         pagePotentialPatients:[],
         currentPage: 1, // 当前页码
         pageSize: 10,   // 每页显示的条目数
         totalItems: 100, // 总条目数
+        areaMap:{"101010":"金水区","101011":"中原区","101012":"二七区","101013":"上街区","101014":"惠济区"}
       }
     },
     methods:{
@@ -65,27 +63,33 @@
       // 处理每页显示条目数变化
       handleSizeChange(newSize) {
         this.pageSize = newSize;
-        // this.$emit('custom-event');
         this.loadPotentialPatients();
       },
       // 处理页码变化
       handleCurrentChange(newPage) {
         this.currentPage = newPage;
-        // this.$emit('custom-event');
         this.loadPotentialContacts();
       },
       loadPotentialPatients() {
-        this.$http.get('getPotentialPatients',{ params: { patient_id: this.patient_id, batch: this.batch }}).then((res)=> {
-          this.potentialPatients = res.data;
-          this.totalItems = res.data.length;
+        this.$http.get('getPotentialPatients',{ params: { patient_id: this.id, date: this.date }}).then((res)=> {
+          this.potentialPatients = res.data.filter(obj => obj.potentialPatientProbability > 0.6);
+          this.totalItems = res.data.filter(obj => obj.potentialPatientProbability > 0.6).length;
+          // this.potentialPatients = res.data;
+          // this.totalItems = res.data.length;
           this.getPageInfo()
+        })
+      },
+      getPatientName(id){
+        this.$http.get('/getPatientById',{params:{id:id}}).then((res)=>{
+          this.patientName =  res.data
         })
       }
     },
 
     created() {
-      this.patient_id = this.$route.query.patient_id;
-      this.batch = this.$route.query.batch;
+      this.id = this.$route.query.patient_id;
+      this.getPatientName(this.id);
+      this.date = this.$route.query.date;
       this.loadPotentialPatients()
     },
   }

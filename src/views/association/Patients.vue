@@ -5,7 +5,7 @@
       <el-form :inline="true" :model="formInline" class="demo-form-inline" style="margin-top: 30px">
         <el-form-item label="查询日期">
           <el-date-picker
-            v-model="formInline.day" type="date" value-format="yyyy-MM-dd" placeholder="选择日期">
+            v-model="formInline.date" type="date" value-format="yyyy-MM-dd" placeholder="选择日期">
           </el-date-picker>
         </el-form-item>
         <el-form-item label="传播区域">
@@ -29,64 +29,60 @@ export default {
   data() {
     return {
       formInline: {
-        day: '2023-07-28',
-        region: '10001'
+        date: '2023-07-28',
+        region: '101010'
       },
-      batch: 0, tag:"",
-      value: ['1000','1'],
+      value: ['10','10','10'],
       options: [
         {
-          value: '1000', label: '合肥市',
-          children:
-            [ { value: '1', label: '蜀山区'},
-              { value: '2', label: '庐阳区'},
-              { value: '3', label: '包河区'},
-              { value: '4', label: '瑶海区'},]
+          value: '1',
+          label: '安徽省',
+          children:[{
+            value:'00',label:'合肥市',children:[
+              { value: '01', label: '蜀山区'},
+              { value: '02', label: '庐阳区'},
+              { value: '03', label: '包河区'},
+              { value: '04', label: '瑶海区'}]
+          }]
         },
         {
-          value: '2', label: '江阴市',
-          children:
-            [
-              { value: '2', label: '澄江街道'},
-              { value: '3', label: '南闸街道'},
-              { value: '4', label: '云亭街道'},
-              { value: '5', label: '城东街道'},
-              { value: '6', label: '申港街道'},
-              { value: '7', label: '利港街道'},
-              { value: '8', label: '夏港街道'}]
+          value: '02',
+          label: '江苏省',
+          children: [{
+            value: '01', label: '无锡市', children: [
+              {value: '02', label: '澄江街道'},
+              {value: '03', label: '南闸街道'},
+              {value: '04', label: '云亭街道'},
+              {value: '05', label: '城东街道'},
+              {value: '06', label: '申港街道'},
+              {value: '07', label: '利港街道'},
+              {value: '08', label: '夏港街道'}]
+          }]
         },
         {
-          value: '3', label: '郑州市',
-          children:
-            [
-              { value: '2', label: '中原区'},
-              { value: '3', label: '二七区'},
-              { value: '4', label: '金水区'},
-              { value: '5', label: '上街区'},
-              { value: '6', label: '惠济区'}]
+          value: '10',
+          label: '河南省',
+          children:  [{
+            value: '10', label: '郑州市', children: [
+              {value: '10', label: '金水区'},
+              {value: '11', label: '二七区'},
+              {value: '12', label: '中原区'},
+              {value: '13', label: '惠济区'},
+              {value: '14', label: '上街区'},]
+          }]
         }]
     }
   },
   methods: {
     showRecord() {
-      if (this.formInline.day === '2023-07-28'){
-        this.batch = 1
-        this.tag = "1"
-      }else if (this.formInline.day === '2023-07-29'){
-        this.batch = 2
-        this.tag = "2"
-      }else if (this.formInline.day === '2023-07-30'){
-        this.batch = 3
-        this.tag = "3"
-      }
       this.formInline.region = this.value.toString().replaceAll(',','')
-      this.$refs.show.showPatients(this.tag,this.formInline.region)
+      this.$refs.show.showPatients(this.formInline.date,this.formInline.region)
     },
     findChain(){
       this.formInline.region = this.value.toString().replaceAll(',','')
       this.$router.push({
         name: 'chain',
-        query: { date: this.tag , areaCode: this.formInline.region,batch:this.batch }
+        query: { date:this.formInline.date, areaCode:this.formInline.region}
       })
     },
     handleChange(value) {

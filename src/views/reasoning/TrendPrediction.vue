@@ -5,20 +5,14 @@
     <el-form :inline="true" :model="day" class="demo-form-inline" style="margin-top: 30px" >
       <el-form-item label="查询日期">
         <el-date-picker
-          v-model="day.batch"
+          v-model="day.date"
           type="date"
           value-format="yyyy-MM-dd"
           placeholder="选择日期">
         </el-date-picker>
-<!--      <el-form-item label="感染日期">-->
-<!--        <el-select v-model="day.batch" placeholder="查询日期">-->
-<!--          <el-option label="7月28日" value="1"></el-option>-->
-<!--          <el-option label="7月29日" value="2"></el-option>-->
-<!--          <el-option label="7月30日" value="3"></el-option>-->
-<!--        </el-select>-->
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="showPrediction(day.batch)">趋势预测</el-button>
+        <el-button type="primary" @click="showPrediction(day.date)">趋势预测</el-button>
       </el-form-item>
     </el-form>
   </el-card>
@@ -29,15 +23,13 @@
           <el-cascader v-model="value" :options="options" @change="handleChange"></el-cascader>
         </el-form-item>
         <el-form-item>
-<!--          area.areaCode改为value-->
-          <el-button type="primary" @click="showAreaPrediction(value,day.batch)">查询</el-button>
+          <el-button type="primary" @click="showAreaPrediction(value,day.date)">查询</el-button>
         </el-form-item>
       </el-form>
       <div class="leftChart" id="left_chart" :style="myChartLeftStyle" ></div>
     </el-card>
     <el-card class="card">
       <h3>合肥市感染趋势预测</h3>
-      <!--        <div slot="header" style="padding-top: 10px; padding-bottom: 10px"></div>-->
       <div class="rightChart" id="right_chart" :style="myChartRightStyle" ></div>
     </el-card>
   </div>
@@ -50,7 +42,7 @@ import * as echarts from "echarts";
 export default {
   data(){
     return{
-      day:{ batch:"2023-07-28" },
+      day:{ date:"2023-07-28" },
       area:{ areaCode:"10001"},
       date:[],
       ShuShanPatientsInfo:[0,0,0],          //蜀山区患者数
@@ -65,38 +57,44 @@ export default {
       AllPotentialPatientInfo:[0,0,0],          //总体潜在患者数
       myChartLeftStyle: { float: "left", width: "100%", height: "400px" }, //图表样式
       myChartRightStyle: { float: "right", width: "100%", height: "400px" }, //图表样式
-      tag:"",
-      value: ['1000','1'],
+      value: ['1','00','01'],
       options: [
         {
-          value: '1000', label: '合肥市',
-          children:
-            [ { value: '1', label: '蜀山区'},
-              { value: '2', label: '庐阳区'},
-              { value: '3', label: '包河区'},
-              { value: '4', label: '瑶海区'},]
+          value: '1',
+          label: '安徽省',
+          children:[{
+            value:'00',label:'合肥市',children:[
+              { value: '01', label: '蜀山区'},
+              { value: '02', label: '庐阳区'},
+              { value: '03', label: '包河区'},
+              { value: '04', label: '瑶海区'},]
+          }]
         },
         {
-          value: '2', label: '江阴市',
-          children:
-            [
-              { value: '2', label: '澄江街道'},
-              { value: '3', label: '南闸街道'},
-              { value: '4', label: '云亭街道'},
-              { value: '5', label: '城东街道'},
-              { value: '6', label: '申港街道'},
-              { value: '7', label: '利港街道'},
-              { value: '8', label: '夏港街道'}]
+          value: '02',
+          label: '江苏省',
+          children: [{
+            value: '01', label: '无锡市', children: [
+              {value: '02', label: '澄江街道'},
+              {value: '03', label: '南闸街道'},
+              {value: '04', label: '云亭街道'},
+              {value: '05', label: '城东街道'},
+              {value: '06', label: '申港街道'},
+              {value: '07', label: '利港街道'},
+              {value: '08', label: '夏港街道'}]
+          }]
         },
         {
-          value: '3', label: '郑州市',
-          children:
-            [
-              { value: '2', label: '中原区'},
-              { value: '3', label: '二七区'},
-              { value: '4', label: '金水区'},
-              { value: '5', label: '上街区'},
-              { value: '6', label: '惠济区'}]
+          value: '03',
+          label: '河南省',
+          children:  [{
+            value: '01', label: '郑州市', children: [
+              {value: '02', label: '金水区'},
+              {value: '03', label: '二七区'},
+              {value: '04', label: '中原区'},
+              {value: '05', label: '惠济区'},
+              {value: '06', label: '上街区'},]
+          }]
         }]
     }
   },
@@ -104,18 +102,15 @@ export default {
     this.showPrediction("2023-07-28")
   },
   methods:{
-    async showPrediction(day){
-      if (day === "2023-07-28"){
-        this.tag = "1";
+    async showPrediction(date){
+      if (date === "2023-07-28"){
         this.date = ["7月28日","7月29日","7月30日"]
-      }else if (day === "2023-07-29"){
-        this.tag = "2";
+      }else if (date === "2023-07-29"){
         this.date = ["7月29日","7月30日","7月31日"]
-      }else if (day === "2023-07-30"){
-        this.tag = "3";
+      }else if (date === "2023-07-30"){
         this.date = ["7月30日","7月31日","8月1日"]
       }
-      const res = await this.$http.get('forecast', { params: { areaCode: "all", batch: this.tag } });
+      const res = await this.$http.get('forecast', { params: { areaCode: "all", date: date } });
       console.log(res.data);
       let responseData = res.data;
       this.AllPatientInfo = Object.values(responseData)
@@ -126,7 +121,7 @@ export default {
       console.log(this.AllPotentialPatientInfo)
       //day变成tag
       this.area.areaCode= this.value.toString().replaceAll(',','')
-      await this.showAreaPrediction(this.area.areaCode, this.tag)
+      await this.showAreaPrediction(this.area.areaCode, date)
       const mulRightColumn = {
         xAxis: { data: this.date },
         // 图例
@@ -169,22 +164,18 @@ export default {
       });
 
     },
-    async showAreaPrediction(Code,day){
+    async showAreaPrediction(Code,date){
       let areaCode = this.value.toString().replaceAll(',','')
       let areaPatients = [];
       let areaPotentialPatients = [];
-      if (day === "2023-07-28"){
-        this.tag = "1";
+      if (date === "2023-07-28"){
         this.date = ["7月28日","7月29日","7月30日"]
-      }else if (day === "2023-07-29"){
-        this.tag = "2";
+      }else if (date === "2023-07-29"){
         this.date = ["7月29日","7月30日","7月31日"]
-      }else if (day === "2023-07-30"){
-        this.tag = "3";
+      }else if (date === "2023-07-30"){
         this.date = ["7月30日","7月31日","8月1日"]
       }
-
-      const res = await this.$http.get('forecast', { params: { areaCode: areaCode, batch: this.tag } });
+      const res = await this.$http.get('forecast', { params: { areaCode: areaCode, date: date } });
       console.log(res.data);
       let responseData = res.data;
       areaPatients = Object.values(responseData)

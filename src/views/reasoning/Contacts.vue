@@ -1,17 +1,14 @@
 <template>
   <div>
     <el-card>
-      <h2 style="display: inline-block">患者id为{{id}}的接触者</h2>
+      <h2 style="display: inline-block">患者{{patientName}}的接触者</h2>
       <el-button style="position: fixed;right:100px" size="medium" type="primary" icon="el-icon-search" @click="reasonPotentialPatients()">推理潜在患者</el-button>
     </el-card>
     <el-table style="width: 100%"  :header-cell-style="{ textAlign: 'center'}" :cell-style="{ textAlign: 'center'}"  border :data="pageContacts">
       <el-table-column prop="contactName" label="姓名"></el-table-column>
       <el-table-column prop="areaCode" label="地区">
         <template v-slot="scope">
-          <span v-if="scope.row.areaCode === '10001'">蜀山区</span>
-          <span v-else-if="scope.row.areaCode === '10002'">庐阳区</span>
-          <span v-else-if="scope.row.areaCode === '10003'">包河区</span>
-          <span v-else>瑶海区</span>
+          <span>{{areaMap[scope.row.areaCode]}}</span>
         </template>
       </el-table-column>
       <el-table-column prop="contactAddress" label="住址"></el-table-column>
@@ -46,12 +43,14 @@ export default {
   //返回数据
   data() {
     return {
-      batch: 0 , id: 0,
+      id:0,
       contacts: [],
+      patientName:'',
       pageContacts:[],
       currentPage: 1, // 当前页码
       pageSize: 10,   // 每页显示的条目数
       totalItems: 100, // 总条目数
+      areaMap:{"101010":"金水区","101011":"中原区","101012":"二七区","101013":"上街区","101014":"惠济区"}
     }
   },
   //方法
@@ -78,7 +77,7 @@ export default {
       this.loadContacts();
     },
     loadContacts() {
-      this.$http.get('findContacts',{ params: { patient_id: this.id, batch: this.batch }}).then((res)=> {
+      this.$http.get('findContacts',{ params: { patient_id: this.id, date: this.date }}).then((res)=> {
         this.contacts = res.data;
         this.totalItems = res.data.length;
         this.getPageInfo()
@@ -87,7 +86,13 @@ export default {
     reasonPotentialPatients(){
       this.$router.push({
         name:'potentialPatients',
-        query:{ id: this.id, batch: this.batch }
+        query:{ id: this.id, date: this.date }
+      })
+    },
+    getPatientName(id){
+      this.$http.get('/getPatientById',{params:{id:id}}).then((res)=>{
+        console.log(res.data)
+        this.patientName =  res.data;
       })
     }
   },
@@ -95,7 +100,8 @@ export default {
   //生命周期函数
   created() {
     this.id = this.$route.query.id;
-    this.batch = this.$route.query.batch;
+    this.getPatientName(this.id);
+    this.date = this.$route.query.date;
     this.loadContacts()
 
   },

@@ -5,22 +5,14 @@
       <el-table-column prop="epidemicId" label="传染病" width="180">流行性感冒</el-table-column>
       <el-table-column prop="areaCode" label="地区">
         <template v-slot="scope">
-          <span v-if="scope.row.areaCode === '10001'">蜀山区</span>
-          <span v-else-if="scope.row.areaCode === '10002'">庐阳区</span>
-          <span v-else-if="scope.row.areaCode === '10003'">包河区</span>
-          <span v-else>瑶海区</span>
+          <span>{{areaMap[scope.row.areaCode]}}</span>
+<!--          <span v-else-if="scope.row.areaCode === '101011'">中原区</span>-->
+<!--          <span v-else>瑶海区</span>-->
         </template>
       </el-table-column>
       <el-table-column prop="patientAddress" label="住址"></el-table-column>
       <el-table-column prop="patientTel" label="联系方式"></el-table-column>
-<!--      <el-table-column prop="patientSymptom" label="症状">-->
-<!--        <template v-slot="scope">-->
-<!--          <span v-if="scope.row.patientSymptom === 1">无症状</span>-->
-<!--          <span v-else-if="scope.row.patientSymptom === 2">较轻</span>-->
-<!--          <span v-else-if="scope.row.patientSymptom === 3">一般</span>-->
-<!--          <span v-else>严重</span>-->
-<!--        </template>-->
-<!--      </el-table-column>-->
+
       <el-table-column prop="patientAge" label="年龄">
         <template v-slot="scope">
           <span>{{scope.row.patientAge}}岁</span>
@@ -36,7 +28,7 @@
     <el-pagination
       class="pagination-container"
       :current-page="currentPage"
-      :page-sizes="[3, 5, 8, 10]"
+      :page-sizes="[5, 8, 10]"
       :page-size="pageSize"
       layout="total, sizes, prev, pager, next, jumper"
       :total="totalItems"
@@ -56,6 +48,7 @@ export default {
       currentPage: 1, // 当前页码
       pageSize: 10,   // 每页显示的条目数
       totalItems: 100, // 总条目数
+      areaMap:{"101010":"金水区","101011":"中原区","101012":"二七区","101013":"上街区","101014":"惠济区"}
     }
   },
   methods:{
@@ -80,15 +73,8 @@ export default {
       this.currentPage = newPage;
       this.$emit('custom-event');
     },
-    // showDayPatients(days) {
-    //   this.$http.get('getPatientsByDate',{params:{date:days}}).then((res)=>{
-    //     this.patients = res.data
-    //     this.totalItems = res.data.length
-    //     this.getPageInfo()
-    //   })
-    // },
-    showPatients(days,areaCode){
-      this.$http.get('getPatients',{ params: { batch:days,areaCode:areaCode } }).then((res)=>{
+    showPatients(date,areaCode){
+      this.$http.get('getPatientsByDateAndAreaCode',{ params: { date:date,areaCode:areaCode } }).then((res)=>{
         this.patients = res.data
         this.totalItems = res.data.length
         this.getPageInfo()

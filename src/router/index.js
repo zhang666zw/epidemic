@@ -34,37 +34,22 @@ const router = new Router({
   routes: [
     { path: '/', redirect:'/reasoning/patients',component: Layout,
       children: [
-        { path: 'reasoning', name: 'reasoning', redirect: '/reasoning/patients', component: Reasoning,
-          meta: { title: "推理模块"},
+        { path: 'reasoning', name: 'reasoning', redirect: '/reasoning/patients', component: Reasoning, meta: { title: "推理模块"},
           children: [
             { path: 'patients', component: Patients, meta: { title: "感染者模块"},},
-            { path: 'contacts', name: 'contacts', component: Contacts,
-              meta: { activeMenu: '/reasoning/patients', title: "接触者模块"}
-            },
-            { path: 'potentialPatients', name: 'potentialPatients', component: PotentialPatients,
-              meta: { title: "潜在患者模块"},
-            },
+            { path: 'contacts', name: 'contacts', component: Contacts, meta: { activeMenu: '/reasoning/patients', title: "接触者模块"}},
+            { path: 'potentialPatients', name: 'potentialPatients', component: PotentialPatients, meta: { title: "潜在患者模块"},},
             { path: 'areaInfo', component: AreaInfo, meta: { title: "区域信息模块"}},
             { path: 'trendPrediction', component: TrendPrediction, meta: { title: "趋势预测模块"}},
-          ]
-        },
+          ]},
         { path: '/association', redirect: '/association/patients', component: Association, meta: { title: "关联模块"},
           children: [
             { path: 'patients', component: PatientChain, meta: { title: "传播链模块"},},
-            { path: 'potentialPatients', name: 'potential', component: ChainContact,
-              meta: { activeMenu: '/association/patients', title: "潜在患者模块"}
-            },
-            { path: 'chain', name: 'chain', component: ChainFind,
-              meta: { activeMenu: '/association/patients', title: "传播链模块"}
-            },
-            { path: 'keyPerson', name: 'keyPerson', component: KeyPerson,
-              meta: { title: "重点对象模块"}
-            },
-            { path: 'areaChain', name: 'AreaChain', component: AreaChain,
-              meta: { activeMenu: '/association/patients', title: "区域传播链模块"}
-            }
-          ]
-        }
+            { path: 'potentialPatients', name: 'potential', component: ChainContact, meta: { activeMenu: '/association/patients', title: "潜在患者模块"}},
+            { path: 'chain', name: 'chain', component: ChainFind, meta: { activeMenu: '/association/patients', title: "传播链模块"}},
+            { path: 'keyPerson', name: 'keyPerson', component: KeyPerson, meta: { title: "重点对象模块"}},
+            { path: 'areaChain', name: 'AreaChain', component: AreaChain, meta: { activeMenu: '/association/patients', title: "区域传播链模块"}}
+          ]}
       ]
     }
   ]

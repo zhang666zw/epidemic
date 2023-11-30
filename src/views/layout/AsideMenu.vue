@@ -1,6 +1,5 @@
 <template>
   <div>
-<!--    active-text-color="#ffd04b"-->
     <el-menu
       class="el-menu-vertical-demo"
       background-color="#fff"

@@ -1,7 +1,7 @@
 <template>
   <div>
     <el-card>
-      <h2 style="display: inline-block">{{area}}传播链</h2>
+      <h2 style="display: inline-block">{{areaName}}传播链</h2>
     </el-card>
     <div id="relationChart" class="echarts_container" style="width: 100%; height: 800px;"></div>
   </div>
@@ -13,7 +13,7 @@ import * as echarts from "echarts";
 export default {
     data() {
       return {
-        date:'', batch:'', areaCode:'', area:'',
+        date:'', areaCode:'', areaName:'',
         patients:[],
         patientID:[],
         potentialID:[],
@@ -23,24 +23,16 @@ export default {
         patientsName:[],
         potentialPatients:[],
         links: [],
+        areaMap:{"101010":"金水区","101011":"中原区","101012":"二七区","101013":"上街区","101014":"惠济区"}
       }
     },
     created() {
       // this.potentialPatients = [];
       this.patients = [];
       this.links = [];
-      this.batch = this.$route.query.batch;
       this.date = this.$route.query.date;
       this.areaCode = this.$route.query.areaCode;
-      if(this.$route.query.areaCode === "10001"){
-        this.area = "蜀山区"
-      }else if (this.$route.query.areaCode === "10002"){
-        this.area = "庐阳区"
-      }else if (this.$route.query.areaCode === "10003"){
-        this.area = "包河区"
-      }else {
-        this.area = "瑶海区"
-      }
+      this.areaName = this.areaMap[this.$route.query.areaCode];
     },
     mounted() {
       // 初始化关系图
@@ -49,7 +41,7 @@ export default {
     methods: {
       async initEcharts() {
         try {
-          const response = await this.$http.get('getRelevanceChain', { params: { batch: this.batch, areaCode: this.areaCode } });
+          const response = await this.$http.get('getRelevanceChain', { params: { date: this.date, areaCode: this.areaCode } });
           this.personRelation = [];
           response.data.forEach((ele)=>{
             const obj = {
@@ -83,7 +75,7 @@ export default {
 
           let a = '10001';
           for (let i = 0; i < this.patientID.length; i++) {
-            const potentialResponse = await this.$http.get('getPotentialPatients', { params: { patient_id: this.patientID[i], batch: this.batch } });
+            const potentialResponse = await this.$http.get('getPotentialPatients', { params: { patient_id: this.patientID[i], date: this.date } });
             potentialResponse.data.forEach((ele) => {
               if(!(this.potentialID.includes((ele.contactId)))){
                 this.potentialID.push(ele.contactId);
@@ -193,41 +185,7 @@ export default {
         window.onresize = function () {
           myChart.resize();
         }
-      },
-      // findDuplicateObjects(array) {
-      //   const objectMap = new Map();
-      //   const duplicateObjects = [];
-      //
-      //   for (const item of array) {
-      //     const itemJSON = JSON.stringify(item);
-      //
-      //     if (objectMap.has(itemJSON)) {
-      //       duplicateObjects.push(item);
-      //     } else {
-      //       objectMap.set(itemJSON, true);
-      //     }
-      //   }
-      //
-      //   return duplicateObjects;
-      // },
-      // checkDuplicateNames(array) {
-      //   const nameSet = new Set();
-      //   const duplicates = [];
-      //
-      //   for (const item of array) {
-      //     if (nameSet.has(item.id)) {
-      //       duplicates.push(item.id);
-      //     } else {
-      //       nameSet.add(item.id);
-      //     }
-      //   }
-      //
-      //   if (duplicates.length > 0) {
-      //     return duplicates;
-      //   } else {
-      //     return "没有重复的姓名";
-      //   }
-      // }
+      }
     },
   }
 </script>
